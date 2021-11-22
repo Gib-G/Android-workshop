@@ -7,12 +7,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.gib.filrouge.R
 
-class TaskListAdapter(private val taskList: List<String>) : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>() {
+class TaskListAdapter(private val taskList: List<Task>) : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>() {
 
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(taskTitle: String) {
-            val textView = itemView.findViewById<TextView>(R.id.task_title);
-            textView.setText(taskTitle);
+        fun bind(task: Task) {
+            val taskTitleTextView = itemView.findViewById<TextView>(R.id.task_title);
+            taskTitleTextView.setText(task.title);
+            val taskDescriptionTextView = itemView.findViewById<TextView>(R.id.task_description);
+            taskDescriptionTextView.setText(task.description);
         }
     }
 
