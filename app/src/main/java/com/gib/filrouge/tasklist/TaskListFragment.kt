@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.gib.filrouge.R
 
 class TaskListFragment : Fragment() {
@@ -19,4 +21,12 @@ class TaskListFragment : Fragment() {
         return rootView;
     }
 
+    private val taskList = listOf("Task 1", "Task 2", "Task 3");
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState);
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view);
+        recyclerView.layoutManager = LinearLayoutManager(activity);
+        recyclerView.adapter = TaskListAdapter(taskList);
+    }
 }
