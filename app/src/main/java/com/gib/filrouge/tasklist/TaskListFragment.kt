@@ -8,8 +8,18 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gib.filrouge.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.*
 
 class TaskListFragment : Fragment() {
+
+    private val taskList = mutableListOf(
+        Task(id = "id_1", title = "Task 1", description = "description 1"),
+        Task(id = "id_2", title = "Task 2"),
+        Task(id = "id_3", title = "Task 3")
+    );
+
+    //private var addButton : FloatingActionButton?;
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,16 +31,22 @@ class TaskListFragment : Fragment() {
         return rootView;
     }
 
-    private val taskList = listOf(
-        Task(id = "id_1", title = "Task 1", description = "description 1"),
-        Task(id = "id_2", title = "Task 2"),
-        Task(id = "id_3", title = "Task 3")
-    );
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState);
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view);
         recyclerView.layoutManager = LinearLayoutManager(activity);
         recyclerView.adapter = TaskListAdapter(taskList);
+        
+        val addButton = view.findViewById<FloatingActionButton>(R.id.floatingActionButton);
+        addButton.setOnClickListener {
+            taskList.add(
+                Task(
+                    id = UUID.randomUUID().toString(),
+                    title = "Task ${taskList.size + 1}"
+                )
+            );
+            // Notifier l'adapter!
+            (recyclerView.adapter as RecyclerView.Adapter).notifyDataSetChanged();
+        };
     }
 }
