@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,10 +33,13 @@ class TaskListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState);
+
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view);
         recyclerView.layoutManager = LinearLayoutManager(activity);
-        recyclerView.adapter = TaskListAdapter(taskList);
+        val adapter = TaskListAdapter(taskList);
+        recyclerView.adapter = adapter;
 
         val addButton = view.findViewById<FloatingActionButton>(R.id.floatingActionButton);
         addButton.setOnClickListener {
@@ -46,7 +50,12 @@ class TaskListFragment : Fragment() {
                 )
             );
             // Notifier l'adapter!
-            (recyclerView.adapter as RecyclerView.Adapter).notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
+        };
+
+        adapter.onClickDelete = { task ->
+            taskList.remove(task);
+            adapter.notifyDataSetChanged();
         };
     }
 }
