@@ -10,31 +10,51 @@ import com.gib.filrouge.R
 
 class TaskListAdapter(private val taskList: List<Task>) : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>() {
 
+    // Buttons event handlers declaration.
     var onClickDelete: (Task) -> Unit = {};
+    var onClickEdit: (Task) -> Unit = {};
 
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        // Tasks text views.
+        private val taskTitleTextView = itemView.findViewById<TextView>(R.id.task_title);
+        private val taskDescriptionTextView = itemView.findViewById<TextView>(R.id.task_title);
+
+        // Buttons.
         private val deleteButton: ImageButton = itemView.findViewById<ImageButton>(R.id.deleteButton);
+        private val editButton: ImageButton = itemView.findViewById<ImageButton>(R.id.editButton);
 
         fun bind(task: Task) {
-            val taskTitleTextView = itemView.findViewById<TextView>(R.id.task_title);
+
+            // Binding task's attributes to the text views.
             taskTitleTextView.setText(task.title);
-            val taskDescriptionTextView = itemView.findViewById<TextView>(R.id.task_description);
             taskDescriptionTextView.setText(task.description);
 
+            // Setting buttons' event handlers.
+            // See TaskListFragment.kt for their proper implementation.
             deleteButton.setOnClickListener({ onClickDelete(task); });
+            editButton.setOnClickListener({ onClickEdit(task); })
+
         }
+
     }
 
     override fun getItemCount(): Int = taskList.size;
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
+
+        // Inflating the single task view.
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false);
+
         return TaskViewHolder(itemView);
+
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
+
+        // Just calling our TaskViewHolder::bind method here.
         holder.bind(taskList[position]);
+
     }
 
 }

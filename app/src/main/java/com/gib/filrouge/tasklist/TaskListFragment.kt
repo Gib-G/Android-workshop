@@ -17,19 +17,27 @@ import java.util.*
 
 class TaskListFragment : Fragment() {
 
+    // The list of default tasks.
     private val taskList = mutableListOf(
         Task(id = "id_1", title = "Task 1", description = "description 1"),
         Task(id = "id_2", title = "Task 2"),
         Task(id = "id_3", title = "Task 3")
     );
 
+    // Used to launch the form activity (FormActivity.kt).
+    // In the lambda, we retrieve the intent sent back to the main activity
+    // by the form activity.
+    // We then process that intent accordingly.
     private val formLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        // ici on récupérera le résultat pour le traiter
+
+        // Get the task instance embedded in the intent.
         val task = result.data?.getSerializableExtra("task") as? Task;
+
         if (task != null) {
             taskList.add(task);
             adapter.notifyDataSetChanged();
-        };
+        }
+
     }
 
     private val adapter = TaskListAdapter(taskList);
@@ -39,9 +47,12 @@ class TaskListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         // Ne rien mettre avant d'avoir inflate notre layout (fragment_task_list.xml).
         val rootView = inflater.inflate(R.layout.fragment_task_list, container, false);
+
         return rootView;
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,5 +81,18 @@ class TaskListFragment : Fragment() {
             taskList.remove(task);
             adapter.notifyDataSetChanged();
         };
+
+        adapter.onClickEdit = { task ->
+
+            // Creating the intent to send to the creation/edit form to edit task.
+            val intent = Intent(activity, FormActivity::class.java);
+
+            // Putting the task instance to edit in the intent.
+            intent.putExtra("task", task);
+
+            // Launching the form activity with the created intent.
+            formLauncher.launch(intent);
+
+        }
     }
 }
