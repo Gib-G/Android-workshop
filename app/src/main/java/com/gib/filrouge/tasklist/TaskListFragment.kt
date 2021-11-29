@@ -36,7 +36,7 @@ class TaskListFragment : Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view);
         recyclerView.layoutManager = LinearLayoutManager(activity);
         recyclerView.adapter = TaskListAdapter(taskList);
-        
+
         val addButton = view.findViewById<FloatingActionButton>(R.id.floatingActionButton);
         addButton.setOnClickListener {
             taskList.add(
