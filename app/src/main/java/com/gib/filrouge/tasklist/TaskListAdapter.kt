@@ -3,18 +3,26 @@ package com.gib.filrouge.tasklist
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.gib.filrouge.R
 
 class TaskListAdapter(private val taskList: List<Task>) : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>() {
 
+    var onClickDelete: (Task) -> Unit = {};
+
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private val deleteButton: ImageButton = itemView.findViewById<ImageButton>(R.id.deleteButton);
+
         fun bind(task: Task) {
             val taskTitleTextView = itemView.findViewById<TextView>(R.id.task_title);
             taskTitleTextView.setText(task.title);
             val taskDescriptionTextView = itemView.findViewById<TextView>(R.id.task_description);
             taskDescriptionTextView.setText(task.description);
+
+            deleteButton.setOnClickListener({ onClickDelete(task); });
         }
     }
 

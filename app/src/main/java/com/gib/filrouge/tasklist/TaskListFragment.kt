@@ -1,13 +1,17 @@
 package com.gib.filrouge.tasklist
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gib.filrouge.R
+import com.gib.filrouge.form.FormActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
@@ -19,7 +23,16 @@ class TaskListFragment : Fragment() {
         Task(id = "id_3", title = "Task 3")
     );
 
-    //private var addButton : FloatingActionButton?;
+    private val formLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        // ici on récupérera le résultat pour le traiter
+        val task = result.data?.getSerializableExtra("task") as? Task;
+        if (task != null) {
+            taskList.add(task);
+            adapter.notifyDataSetChanged();
+        };
+    }
+
+    private val adapter = TaskListAdapter(taskList);
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,21 +45,30 @@ class TaskListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState);
+
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view);
         recyclerView.layoutManager = LinearLayoutManager(activity);
-        recyclerView.adapter = TaskListAdapter(taskList);
+        recyclerView.adapter = adapter;
 
         val addButton = view.findViewById<FloatingActionButton>(R.id.floatingActionButton);
-        addButton.setOnClickListener {
+        addButton.setOnClickListener {/*
             taskList.add(
                 Task(
                     id = UUID.randomUUID().toString(),
                     title = "Task ${taskList.size + 1}"
                 )
-            );
+            );*/
+            // Launches the form activity when the add button is clicked.
+            formLauncher.launch(Intent(activity, FormActivity::class.java));
             // Notifier l'adapter!
-            (recyclerView.adapter as RecyclerView.Adapter).notifyDataSetChanged();
+            //adapter.notifyDataSetChanged();
+        };
+
+        adapter.onClickDelete = { task ->
+            taskList.remove(task);
+            adapter.notifyDataSetChanged();
         };
     }
 }
