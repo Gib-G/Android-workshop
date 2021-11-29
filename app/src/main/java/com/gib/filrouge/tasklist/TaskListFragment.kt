@@ -23,9 +23,16 @@ class TaskListFragment : Fragment() {
         Task(id = "id_3", title = "Task 3")
     );
 
-    val formLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private val formLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         // ici on récupérera le résultat pour le traiter
+        val task = result.data?.getSerializableExtra("task") as? Task;
+        if (task != null) {
+            taskList.add(task);
+            adapter.notifyDataSetChanged();
+        };
     }
+
+    private val adapter = TaskListAdapter(taskList);
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +50,6 @@ class TaskListFragment : Fragment() {
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view);
         recyclerView.layoutManager = LinearLayoutManager(activity);
-        val adapter = TaskListAdapter(taskList);
         recyclerView.adapter = adapter;
 
         val addButton = view.findViewById<FloatingActionButton>(R.id.floatingActionButton);
