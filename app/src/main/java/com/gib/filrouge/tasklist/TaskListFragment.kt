@@ -24,6 +24,8 @@ class TaskListFragment : Fragment() {
         Task(id = "id_3", title = "Task 3")
     );
 
+    private val adapter = TaskListAdapter(taskList);
+
     // Used to launch the form activity (FormActivity.kt).
     // In the lambda, we retrieve the intent sent back to the main activity
     // by the form activity.
@@ -39,8 +41,6 @@ class TaskListFragment : Fragment() {
         }
 
     }
-
-    private val adapter = TaskListAdapter(taskList);
 
     override fun onCreateView(
         inflater: LayoutInflater,

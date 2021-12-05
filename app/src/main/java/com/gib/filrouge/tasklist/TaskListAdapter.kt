@@ -18,7 +18,7 @@ class TaskListAdapter(private val taskList: List<Task>) : RecyclerView.Adapter<T
 
         // Tasks text views.
         private val taskTitleTextView = itemView.findViewById<TextView>(R.id.task_title);
-        private val taskDescriptionTextView = itemView.findViewById<TextView>(R.id.task_title);
+        private val taskDescriptionTextView = itemView.findViewById<TextView>(R.id.task_description);
 
         // Buttons.
         private val deleteButton: ImageButton = itemView.findViewById<ImageButton>(R.id.deleteButton);
