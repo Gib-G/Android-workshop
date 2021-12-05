@@ -33,12 +33,24 @@ class TaskListFragment : Fragment() {
     private val formLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 
         // Get the task instance embedded in the intent.
-        val task = result.data?.getSerializableExtra("task") as? Task;
+        val newTask = result.data?.getSerializableExtra("task") as Task;
 
-        if (task != null) {
-            taskList.add(task);
-            adapter.notifyDataSetChanged();
+        // Check if the tasks already exists in the list
+        // by looking at UUIDs.
+        val task: Task? = taskList.find { it.id == newTask.id; }
+        val index = taskList.indexOf(task);
+
+        // If a matching task is found in the list.
+        if(index >= 0) {
+            taskList[index] = newTask;
         }
+        // Otherwise, add the newly created task to the list.
+        else {
+            taskList.add(newTask);
+        }
+
+        // In any case, notify for changes!
+        adapter.notifyDataSetChanged();
 
     }
 
