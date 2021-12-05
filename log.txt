@@ -1,3 +1,0 @@
-> 29/11 : TP2 complété jusqu'à l'étape 6 incluse. Étape 7 commencée, à finir 
-pour la prochaine séance (+ avancer un peu sur le TP3).
-RQ: Changements non commit.

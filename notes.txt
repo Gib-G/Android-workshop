@@ -1,0 +1,4 @@
+Mail utilisé pour l'API : gib@example.com
+Mdp : 123456
+Prénom: Gib
+Nom: Zebi
