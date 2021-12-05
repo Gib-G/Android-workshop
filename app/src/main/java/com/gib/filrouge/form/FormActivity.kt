@@ -18,7 +18,7 @@ class FormActivity : AppCompatActivity() {
 
         // The different view elements in the form activity.
         val taskNameInput = findViewById<EditText>(R.id.taskNameInput);
-        val taskDescriptionInput = findViewById<EditText>(R.id.taskNameInput);
+        val taskDescriptionInput = findViewById<EditText>(R.id.taskDescriptionInput);
         val validateButton = findViewById<Button>(R.id.validateTaskCreation);
 
         // Retrieves the task embedded in the received intent if such a task exists.
