@@ -1,6 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+
+    // Serialization plugin for TP3.
+    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlin_version"
 }
 
 android {
