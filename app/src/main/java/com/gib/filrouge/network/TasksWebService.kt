@@ -8,5 +8,5 @@ interface TasksWebService {
 
     @GET("tasks")
     suspend fun getTasks(): Response<List<Task>>
-    
+
 }
