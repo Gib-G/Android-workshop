@@ -16,8 +16,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gib.filrouge.R
 import com.gib.filrouge.form.FormActivity
 import com.gib.filrouge.network.Api
+import com.gib.filrouge.network.TasksRepository
 import com.gib.filrouge.network.UserInfo
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.util.*
@@ -34,6 +37,8 @@ class TaskListFragment : Fragment() {
     private val adapter = TaskListAdapter(taskList);
 
     private var headerTextView : TextView? = null;
+
+    private val tasksRepository = TasksRepository();
 
     // Used to launch the form activity (FormActivity.kt).
     // In the lambda, we retrieve the intent sent back to the main activity
@@ -118,6 +123,15 @@ class TaskListFragment : Fragment() {
             formLauncher.launch(intent);
 
         }
+
+        lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`
+            tasksRepository.taskList.collect { newList ->
+                taskList.clear();
+                taskList.addAll(newList);
+                adapter.notifyDataSetChanged();
+            }
+        }
+
     }
 
     override fun onResume() {
@@ -137,6 +151,9 @@ class TaskListFragment : Fragment() {
             // Putting user info in the header text view.
             headerTextView?.text = """${userInfo?.firstName}
                 |${userInfo?.lastName}""".trimMargin();
+
+            // Refreshing tasks repo.
+            tasksRepository.refresh();
 
         }
 
