@@ -42,6 +42,12 @@ object Api {
         .addConverterFactory(converterFactory)
         .build()
 
+    // Service to query API on users.
+    val userWebService: UserWebService by lazy {
+        retrofit.create(UserWebService::class.java)
+    }
+
+    // Service to query API on tasks.
     val userWebService: UserWebService by lazy {
         retrofit.create(UserWebService::class.java)
     }
