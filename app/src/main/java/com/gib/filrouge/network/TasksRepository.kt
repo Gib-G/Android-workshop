@@ -27,4 +27,47 @@ class TasksRepository {
         }
     }
 
+    suspend fun deleteTask(task: Task) {
+
+        val response = tasksWebService.deleteTask(task, task.id);
+
+        if(response.isSuccessful) {
+
+            // If deletion is successful on the API, we effectively
+            // remove the task from the local task repo.
+            _taskList.value -= task;
+
+        }
+    }
+
+    suspend fun createTask(task: Task) {
+
+        val response = tasksWebService.createTask(task);
+
+        if(response.isSuccessful) {
+
+            val task: Task? = response.body();
+
+            if(task != null) _taskList.value += task;
+
+        }
+    }
+
+    suspend fun updateTask(task: Task) {
+
+        val response = tasksWebService.updateTask(task, task.id);
+
+        if(response.isSuccessful) {
+
+            val task: Task? = response.body();
+
+            if(task == null) return;
+
+            val oldTask: Task? = _taskList.value.find { it.id == task.id; }
+            if(oldTask != null) _taskList.value -= oldTask;
+            _taskList.value += task;
+
+        }
+    }
+
 }
