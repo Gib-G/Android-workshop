@@ -40,34 +40,26 @@ class TasksRepository {
         }
     }
 
-    suspend fun createTask(task: Task) {
+    suspend fun updateOrCreateTask(task: Task) {
 
-        val response = tasksWebService.createTask(task);
-
-        if(response.isSuccessful) {
-
-            val task: Task? = response.body();
-
-            if(task != null) _taskList.value += task;
-
-        }
-    }
-
-    suspend fun updateTask(task: Task) {
-
-        val response = tasksWebService.updateTask(task, task.id);
+        var response = tasksWebService.updateTask(task, task.id);
 
         if(response.isSuccessful) {
 
-            val task: Task? = response.body();
-
-            if(task == null) return;
-
-            val oldTask: Task? = _taskList.value.find { it.id == task.id; }
+            val oldTask = _taskList.value.find { it.id == task.id; }
             if(oldTask != null) _taskList.value -= oldTask;
             _taskList.value += task;
 
+        } else {
+
+            if(tasksWebService.createTask(task).isSuccessful) {
+
+                _taskList.value += task;
+
+            }
+
         }
+
     }
 
 }
