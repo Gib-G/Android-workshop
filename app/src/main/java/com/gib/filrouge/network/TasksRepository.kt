@@ -29,13 +29,13 @@ class TasksRepository {
 
     suspend fun deleteTask(task: Task) {
 
-        val response = tasksWebService.deleteTask(task, task.id);
+        val response = tasksWebService.deleteTask(task.id);
 
         if(response.isSuccessful) {
 
             // If deletion is successful on the API, we effectively
             // remove the task from the local task repo.
-            _taskList.value -= task;
+            _taskList.value = taskList.value - task;
 
         }
     }
@@ -47,14 +47,14 @@ class TasksRepository {
         if(response.isSuccessful) {
 
             val oldTask = _taskList.value.find { it.id == task.id; }
-            if(oldTask != null) _taskList.value -= oldTask;
-            _taskList.value += task;
+            if(oldTask != null) _taskList.value = taskList.value - oldTask;
+            _taskList.value = taskList.value + task;
 
         } else {
 
             if(tasksWebService.createTask(task).isSuccessful) {
 
-                _taskList.value += task;
+                _taskList.value = taskList.value + task;
 
             }
 

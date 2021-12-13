@@ -109,6 +109,7 @@ class TaskListFragment : Fragment() {
             }
 
             adapter.notifyDataSetChanged();
+
         };
 
         adapter.onClickEdit = { task ->
