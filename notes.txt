@@ -1,0 +1,5 @@
+Mail utilisé pour l'API : gib@example.com
+Mdp : 123456
+Prénom: Gib
+Nom: Zebi
+Token obtenu : eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo1NDAsImV4cCI6MTY3MDI1NjA0MX0.pxPoUWylu5uqdRqiW9rceKsYWyGm5itpIz_k0FeNOL4

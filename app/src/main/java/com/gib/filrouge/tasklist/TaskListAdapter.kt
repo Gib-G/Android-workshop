@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.gib.filrouge.R
 
-class TaskListAdapter(private val taskList: List<Task>) : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>() {
+class TaskListAdapter(private var taskList: List<Task>) : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>() {
 
     // Buttons event handlers declaration.
     var onClickDelete: (Task) -> Unit = {};
@@ -54,6 +54,12 @@ class TaskListAdapter(private val taskList: List<Task>) : RecyclerView.Adapter<T
 
         // Just calling our TaskViewHolder::bind method here.
         holder.bind(taskList[position]);
+
+    }
+
+    fun setTaskList(taskList: List<Task>) {
+
+        this.taskList = taskList;
 
     }
 

@@ -2,29 +2,45 @@ package com.gib.filrouge.tasklist
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gib.filrouge.R
 import com.gib.filrouge.form.FormActivity
+import com.gib.filrouge.network.Api
+import com.gib.filrouge.network.TasksRepository
+import com.gib.filrouge.network.UserInfo
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import retrofit2.Response
 import java.util.*
 
 class TaskListFragment : Fragment() {
 
     // The list of default tasks.
+    /*
     private val taskList = mutableListOf(
         Task(id = "id_1", title = "Task 1", description = "description 1"),
         Task(id = "id_2", title = "Task 2"),
         Task(id = "id_3", title = "Task 3")
     );
+    */
 
-    private val adapter = TaskListAdapter(taskList);
+    private var headerTextView : TextView? = null;
+
+    private val tasksRepository = TasksRepository();
+
+    private val adapter = TaskListAdapter(tasksRepository.taskList.value);
 
     // Used to launch the form activity (FormActivity.kt).
     // In the lambda, we retrieve the intent sent back to the main activity
@@ -35,18 +51,10 @@ class TaskListFragment : Fragment() {
         // Get the task instance embedded in the intent.
         val newTask = result.data?.getSerializableExtra("task") as Task;
 
-        // Check if the tasks already exists in the list
-        // by looking at UUIDs.
-        val task: Task? = taskList.find { it.id == newTask.id; }
-        val index = taskList.indexOf(task);
+        lifecycleScope.launch {
 
-        // If a matching task is found in the list.
-        if(index >= 0) {
-            taskList[index] = newTask;
-        }
-        // Otherwise, add the newly created task to the list.
-        else {
-            taskList.add(newTask);
+            tasksRepository.updateOrCreateTask(newTask);
+
         }
 
         // In any case, notify for changes!
@@ -71,6 +79,9 @@ class TaskListFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState);
 
+        // Gets the header text view.
+        headerTextView = activity?.findViewById<TextView>(R.id.header);
+
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view);
         recyclerView.layoutManager = LinearLayoutManager(activity);
         recyclerView.adapter = adapter;
@@ -90,8 +101,15 @@ class TaskListFragment : Fragment() {
         };
 
         adapter.onClickDelete = { task ->
-            taskList.remove(task);
+
+            lifecycleScope.launch {
+
+                tasksRepository.deleteTask(task);
+
+            }
+
             adapter.notifyDataSetChanged();
+
         };
 
         adapter.onClickEdit = { task ->
@@ -106,5 +124,44 @@ class TaskListFragment : Fragment() {
             formLauncher.launch(intent);
 
         }
+
+        lifecycleScope.launch {
+
+            // on lance une coroutine car `collect` est `suspend`
+            tasksRepository.taskList.collect { newList ->
+
+                adapter.setTaskList(newList);
+
+                adapter.notifyDataSetChanged();
+
+            }
+
+        }
+
+    }
+
+    override fun onResume() {
+
+        super.onResume();
+
+        // Retrieving user info from the API.
+        // GET request to the API with the Api.userWebService.getInfo() method.
+        // Ici on ne va pas gérer les cas d'erreur donc on force le crash avec "!!"
+        // launch launches asynchronous code (a coroutine) in which you can call functions
+        // declared as "suspend".
+        lifecycleScope.launch {
+
+            // This method is declared as "suspend".
+            var userInfo = Api.userWebService.getInfo().body()!!;
+
+            // Putting user info in the header text view.
+            headerTextView?.text = """${userInfo?.firstName}
+                |${userInfo?.lastName}""".trimMargin();
+
+            // Refreshing tasks repo.
+            tasksRepository.refresh();
+
+        }
+
     }
 }
