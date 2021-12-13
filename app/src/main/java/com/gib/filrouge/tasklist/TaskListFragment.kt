@@ -28,17 +28,19 @@ import java.util.*
 class TaskListFragment : Fragment() {
 
     // The list of default tasks.
+    /*
     private val taskList = mutableListOf(
         Task(id = "id_1", title = "Task 1", description = "description 1"),
         Task(id = "id_2", title = "Task 2"),
         Task(id = "id_3", title = "Task 3")
     );
-
-    private val adapter = TaskListAdapter(taskList);
+    */
 
     private var headerTextView : TextView? = null;
 
     private val tasksRepository = TasksRepository();
+
+    private val adapter = TaskListAdapter(tasksRepository.taskList.value);
 
     // Used to launch the form activity (FormActivity.kt).
     // In the lambda, we retrieve the intent sent back to the main activity
@@ -49,18 +51,10 @@ class TaskListFragment : Fragment() {
         // Get the task instance embedded in the intent.
         val newTask = result.data?.getSerializableExtra("task") as Task;
 
-        // Check if the tasks already exists in the list
-        // by looking at UUIDs.
-        val task: Task? = taskList.find { it.id == newTask.id; }
-        val index = taskList.indexOf(task);
+        lifecycleScope.launch {
 
-        // If a matching task is found in the list.
-        if(index >= 0) {
-            taskList[index] = newTask;
-        }
-        // Otherwise, add the newly created task to the list.
-        else {
-            taskList.add(newTask);
+            tasksRepository.updateOrCreateTask(newTask);
+
         }
 
         // In any case, notify for changes!
@@ -107,7 +101,13 @@ class TaskListFragment : Fragment() {
         };
 
         adapter.onClickDelete = { task ->
-            taskList.remove(task);
+
+            lifecycleScope.launch {
+
+                tasksRepository.deleteTask(task);
+
+            }
+
             adapter.notifyDataSetChanged();
         };
 
@@ -128,9 +128,11 @@ class TaskListFragment : Fragment() {
 
             // on lance une coroutine car `collect` est `suspend`
             tasksRepository.taskList.collect { newList ->
-                taskList.clear();
-                taskList.addAll(newList);
+
+                adapter.setTaskList(newList);
+
                 adapter.notifyDataSetChanged();
+
             }
 
         }
