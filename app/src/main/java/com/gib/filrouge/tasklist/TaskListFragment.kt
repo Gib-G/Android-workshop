@@ -124,12 +124,15 @@ class TaskListFragment : Fragment() {
 
         }
 
-        lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`
+        lifecycleScope.launch {
+
+            // on lance une coroutine car `collect` est `suspend`
             tasksRepository.taskList.collect { newList ->
                 taskList.clear();
                 taskList.addAll(newList);
                 adapter.notifyDataSetChanged();
             }
+
         }
 
     }
