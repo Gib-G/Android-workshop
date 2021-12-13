@@ -40,7 +40,7 @@ class TaskListFragment : Fragment() {
 
     private val tasksRepository = TasksRepository();
 
-    private val adapter = TaskListAdapter(tasksRepository.taskList.value);
+    private val adapter = TaskListAdapter();
 
     // Used to launch the form activity (FormActivity.kt).
     // In the lambda, we retrieve the intent sent back to the main activity
@@ -130,7 +130,7 @@ class TaskListFragment : Fragment() {
             // on lance une coroutine car `collect` est `suspend`
             tasksRepository.taskList.collect { newList ->
 
-                adapter.setTaskList(newList);
+                adapter.submitList(newList);
 
                 adapter.notifyDataSetChanged();
 

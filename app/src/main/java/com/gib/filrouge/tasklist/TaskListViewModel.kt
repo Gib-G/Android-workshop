@@ -1,4 +1,6 @@
 package com.gib.filrouge.tasklist
 
-class TaskListViewModel {
+import androidx.lifecycle.ViewModel
+
+class TaskListViewModel : ViewModel() {
 }
