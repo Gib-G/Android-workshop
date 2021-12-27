@@ -28,18 +28,7 @@ import java.util.*
 
 class TaskListFragment : Fragment() {
 
-    // The list of default tasks.
-    /*
-    private val taskList = mutableListOf(
-        Task(id = "id_1", title = "Task 1", description = "description 1"),
-        Task(id = "id_2", title = "Task 2"),
-        Task(id = "id_3", title = "Task 3")
-    );
-    */
-
     private var headerTextView : TextView? = null;
-
-    //private val tasksRepository = TasksRepository();
 
     private val adapter = TaskListAdapter();
 
@@ -86,17 +75,9 @@ class TaskListFragment : Fragment() {
         recyclerView.adapter = adapter;
 
         val addButton = view.findViewById<FloatingActionButton>(R.id.floatingActionButton);
-        addButton.setOnClickListener {/*
-            taskList.add(
-                Task(
-                    id = UUID.randomUUID().toString(),
-                    title = "Task ${taskList.size + 1}"
-                )
-            );*/
+        addButton.setOnClickListener {
             // Launches the form activity when the add button is clicked.
             formLauncher.launch(Intent(activity, FormActivity::class.java));
-            // Notifier l'adapter!
-            //adapter.notifyDataSetChanged();
         };
 
         adapter.onClickDelete = { task ->
@@ -159,4 +140,5 @@ class TaskListFragment : Fragment() {
         }
 
     }
+
 }
