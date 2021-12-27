@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -14,6 +15,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.gib.filrouge.R
 import com.gib.filrouge.form.FormActivity
 import com.gib.filrouge.network.Api
@@ -119,6 +122,12 @@ class TaskListFragment : Fragment() {
     override fun onResume() {
 
         super.onResume();
+
+        val avatar = view?.findViewById<ImageView>(R.id.avatar);
+
+        avatar?.load("https://goo.gl/gEgYUd") {
+            transformations(CircleCropTransformation())
+        };
 
         // Retrieving user info from the API.
         // GET request to the API with the Api.userWebService.getInfo() method.
