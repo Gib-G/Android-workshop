@@ -22,6 +22,7 @@ import com.gib.filrouge.form.FormActivity
 import com.gib.filrouge.network.Api
 import com.gib.filrouge.network.TasksRepository
 import com.gib.filrouge.network.UserInfo
+import com.gib.filrouge.user.UserInfoActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.collect
@@ -32,6 +33,7 @@ import java.util.*
 class TaskListFragment : Fragment() {
 
     private var headerTextView : TextView? = null;
+    private var avatar: ImageView? = null;
 
     private val adapter = TaskListAdapter();
 
@@ -72,6 +74,13 @@ class TaskListFragment : Fragment() {
 
         // Gets the header text view.
         headerTextView = activity?.findViewById<TextView>(R.id.header);
+
+        // Gets the user avatar image view.
+        avatar = view?.findViewById(R.id.avatar);
+
+        avatar?.setOnClickListener {
+            formLauncher.launch(Intent(activity, UserInfoActivity::class.java));
+        }
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view);
         recyclerView.layoutManager = LinearLayoutManager(activity);
@@ -122,8 +131,6 @@ class TaskListFragment : Fragment() {
     override fun onResume() {
 
         super.onResume();
-
-        val avatar = view?.findViewById<ImageView>(R.id.avatar);
 
         avatar?.load("https://goo.gl/gEgYUd") {
             transformations(CircleCropTransformation())
