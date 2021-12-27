@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,9 +39,11 @@ class TaskListFragment : Fragment() {
 
     private var headerTextView : TextView? = null;
 
-    private val tasksRepository = TasksRepository();
+    //private val tasksRepository = TasksRepository();
 
     private val adapter = TaskListAdapter();
+
+    private val viewModel: TaskListViewModel by viewModels();
 
     // Used to launch the form activity (FormActivity.kt).
     // In the lambda, we retrieve the intent sent back to the main activity
@@ -51,11 +54,7 @@ class TaskListFragment : Fragment() {
         // Get the task instance embedded in the intent.
         val newTask = result.data?.getSerializableExtra("task") as Task;
 
-        lifecycleScope.launch {
-
-            tasksRepository.updateOrCreateTask(newTask);
-
-        }
+        viewModel.addOrEdit(newTask);
 
         // In any case, notify for changes!
         adapter.notifyDataSetChanged();
@@ -102,11 +101,7 @@ class TaskListFragment : Fragment() {
 
         adapter.onClickDelete = { task ->
 
-            lifecycleScope.launch {
-
-                tasksRepository.deleteTask(task);
-
-            }
+            viewModel.delete(task);
 
             adapter.notifyDataSetChanged();
 
@@ -128,7 +123,7 @@ class TaskListFragment : Fragment() {
         lifecycleScope.launch {
 
             // on lance une coroutine car `collect` est `suspend`
-            tasksRepository.taskList.collect { newList ->
+            viewModel.taskList.collect { newList ->
 
                 adapter.submitList(newList);
 
@@ -159,7 +154,7 @@ class TaskListFragment : Fragment() {
                 |${userInfo?.lastName}""".trimMargin();
 
             // Refreshing tasks repo.
-            tasksRepository.refresh();
+            viewModel.refresh();
 
         }
 
