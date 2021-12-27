@@ -4,11 +4,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ListAdapter
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.gib.filrouge.R
 
-class TaskListAdapter(private var taskList: List<Task>) : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>() {
+object TaskDiffCallback : DiffUtil.ItemCallback<Task>() {
+
+    // are they the same "entity" ? (usually same id)
+    override fun areItemsTheSame(oldTask: Task, newTask: Task) = oldTask.id == newTask.id;
+
+    // do they have the same data ? (content)
+    override fun areContentsTheSame(oldTask: Task, newTask: Task) = oldTask.title == newTask.title && oldTask.description == newTask.description;
+
+}
+
+class TaskListAdapter(/*private var taskList: List<Task>*/) : androidx.recyclerview.widget.ListAdapter<Task, TaskListAdapter.TaskViewHolder>(TaskDiffCallback) {
 
     // Buttons event handlers declaration.
     var onClickDelete: (Task) -> Unit = {};
@@ -39,8 +51,6 @@ class TaskListAdapter(private var taskList: List<Task>) : RecyclerView.Adapter<T
 
     }
 
-    override fun getItemCount(): Int = taskList.size;
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
 
         // Inflating the single task view.
@@ -53,13 +63,7 @@ class TaskListAdapter(private var taskList: List<Task>) : RecyclerView.Adapter<T
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
 
         // Just calling our TaskViewHolder::bind method here.
-        holder.bind(taskList[position]);
-
-    }
-
-    fun setTaskList(taskList: List<Task>) {
-
-        this.taskList = taskList;
+        holder.bind(getItem(position));
 
     }
 
