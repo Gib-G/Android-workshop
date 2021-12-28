@@ -4,13 +4,17 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
+import androidx.core.net.toUri
 import com.gib.filrouge.R
+import java.io.File
 
 class UserInfoActivity : AppCompatActivity() {
 
@@ -35,6 +39,14 @@ class UserInfoActivity : AppCompatActivity() {
             else showExplanation();
         }
 
+    private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
+        val tmpFile = File.createTempFile("avatar", "jpeg")
+        tmpFile.outputStream().use {
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, it)
+        }
+        handleImage(tmpFile.toUri())
+    }
+
     private fun launchCameraWithPermission() {
         val camPermission = Manifest.permission.CAMERA
         val permissionStatus = checkSelfPermission(camPermission)
@@ -42,7 +54,7 @@ class UserInfoActivity : AppCompatActivity() {
         val isExplanationNeeded = shouldShowRequestPermissionRationale(camPermission)
         when {
             isAlreadyAccepted -> launchCamera(); // lancer l'action souhaitée
-                isExplanationNeeded -> showExplanation(); // afficher une explication
+            isExplanationNeeded -> showExplanation(); // afficher une explication
             else -> launchAppSettings(); // lancer la demande de permission
         }
     }
@@ -71,7 +83,7 @@ class UserInfoActivity : AppCompatActivity() {
     }
 
     private fun launchCamera() {
-        // à compléter à l'étape suivante
+        cameraLauncher.launch();
     }
 
 }
