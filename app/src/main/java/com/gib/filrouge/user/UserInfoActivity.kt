@@ -47,6 +47,9 @@ class UserInfoActivity : AppCompatActivity() {
         takePictureButton?.setOnClickListener {
             launchCameraWithPermission();
         }
+        uploadImageButton?.setOnClickListener {
+            galleryLauncher.launch("image/*");
+        }
 
         lifecycleScope.launchWhenStarted {
             photoUri = mediaStore.createMediaUri(
@@ -83,7 +86,9 @@ class UserInfoActivity : AppCompatActivity() {
 
 
     private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
-
+        if(it != null) {
+            handleImage(it);
+        }
     }
 
     private fun launchCameraWithPermission() {
