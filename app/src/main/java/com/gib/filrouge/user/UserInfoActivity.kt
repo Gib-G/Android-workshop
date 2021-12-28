@@ -13,10 +13,17 @@ import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import com.gib.filrouge.R
+import com.gib.filrouge.network.Api
+import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 class UserInfoActivity : AppCompatActivity() {
+
+    private val userWebService = Api.userWebService;
 
     private var takePictureButton: Button? = null;
     private var uploadImageButton: Button? = null;
@@ -78,8 +85,20 @@ class UserInfoActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    // Converts an image pointed to by a URI into a MultipartBody.Part.
+    private fun convert(uri: Uri): MultipartBody.Part {
+        return MultipartBody.Part.createFormData(
+            name = "avatar",
+            filename = "temp.jpeg",
+            body = contentResolver.openInputStream(uri)!!.readBytes().toRequestBody()
+        )
+    }
+
     private fun handleImage(imageUri: Uri) {
         // afficher l'image dans l'ImageView
+        lifecycleScope.launch {
+            userWebService.updateAvatar(convert(imageUri));
+        }
     }
 
     private fun launchCamera() {
