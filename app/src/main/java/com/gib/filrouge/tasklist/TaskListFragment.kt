@@ -131,11 +131,7 @@ class TaskListFragment : Fragment() {
     override fun onResume() {
         
         super.onResume();
-        /*
-        avatar?.load("https://goo.gl/gEgYUd") {
-            transformations(CircleCropTransformation())
-        };
-        */
+
         // Retrieving user info from the API.
         // GET request to the API with the Api.userWebService.getInfo() method.
         // Ici on ne va pas gérer les cas d'erreur donc on force le crash avec "!!"
@@ -145,9 +141,11 @@ class TaskListFragment : Fragment() {
 
             // This method is declared as "suspend".
             var userInfo = Api.userWebService.getInfo().body()!!;
-            avatar?.load(userInfo.avatar) {
+            avatar?.load(userInfo.avatar ?: "https://goo.gl/gEgYUd") {
                 // Parameter in case of error.
-                error(R.drawable.ic_launcher_background)
+                error(R.drawable.ic_launcher_background);
+                // Some transformations
+                transformations(CircleCropTransformation());
             }
 
             // Putting user info in the header text view.

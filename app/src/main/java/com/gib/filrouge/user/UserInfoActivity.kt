@@ -9,6 +9,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
@@ -16,10 +17,15 @@ import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.gib.filrouge.R
 import com.gib.filrouge.network.Api
+import com.google.android.material.snackbar.Snackbar
+import com.google.modernstorage.mediastore.FileType
+import com.google.modernstorage.mediastore.MediaStoreRepository
+import com.google.modernstorage.mediastore.SharedPrimary
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+import java.util.*
 
 class UserInfoActivity : AppCompatActivity() {
 
@@ -27,6 +33,9 @@ class UserInfoActivity : AppCompatActivity() {
 
     private var takePictureButton: Button? = null;
     private var uploadImageButton: Button? = null;
+
+    val mediaStore by lazy { MediaStoreRepository(this) };
+    private lateinit var photoUri: Uri;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
@@ -38,6 +47,14 @@ class UserInfoActivity : AppCompatActivity() {
         takePictureButton?.setOnClickListener {
             launchCameraWithPermission();
         }
+
+        lifecycleScope.launchWhenStarted {
+            photoUri = mediaStore.createMediaUri(
+                filename = "picture-${UUID.randomUUID()}.jpg",
+                type = FileType.IMAGE,
+                location = SharedPrimary
+            ).getOrThrow();
+        }
     }
 
     private val cameraPermissionLauncher =
@@ -46,14 +63,15 @@ class UserInfoActivity : AppCompatActivity() {
             else showExplanation();
         }
 
-    private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
-        val tmpFile = File.createTempFile("avatar", "jpeg")
-        tmpFile.outputStream().use {
-            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, it)
+    private val cameraLauncher =
+        registerForActivityResult(ActivityResultContracts.TakePicture()) { accepted ->
+            if (accepted) handleImage(photoUri);
+            else Snackbar.make(window.decorView.rootView, "Échec!", Snackbar.LENGTH_LONG).show();
         }
-        handleImage(tmpFile.toUri())
-    }
 
+    /*
+    private val galleryLauncher = registerForActivityResult(GetContent()) {...}
+    */
     private fun launchCameraWithPermission() {
         val camPermission = Manifest.permission.CAMERA
         val permissionStatus = checkSelfPermission(camPermission)
@@ -102,7 +120,7 @@ class UserInfoActivity : AppCompatActivity() {
     }
 
     private fun launchCamera() {
-        cameraLauncher.launch();
+        cameraLauncher.launch(photoUri);
     }
 
 }
