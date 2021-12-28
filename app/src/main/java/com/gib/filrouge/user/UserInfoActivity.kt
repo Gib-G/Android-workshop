@@ -57,6 +57,18 @@ class UserInfoActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume();
+
+        lifecycleScope.launchWhenStarted {
+            photoUri = mediaStore.createMediaUri(
+                filename = "picture-${UUID.randomUUID()}.jpg",
+                type = FileType.IMAGE,
+                location = SharedPrimary
+            ).getOrThrow();
+        }
+    }
+
     private val cameraPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { accepted ->
             if (accepted) launchCamera();
@@ -69,9 +81,11 @@ class UserInfoActivity : AppCompatActivity() {
             else Snackbar.make(window.decorView.rootView, "Échec!", Snackbar.LENGTH_LONG).show();
         }
 
-    /*
-    private val galleryLauncher = registerForActivityResult(GetContent()) {...}
-    */
+
+    private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
+
+    }
+
     private fun launchCameraWithPermission() {
         val camPermission = Manifest.permission.CAMERA
         val permissionStatus = checkSelfPermission(camPermission)
@@ -80,7 +94,7 @@ class UserInfoActivity : AppCompatActivity() {
         when {
             isAlreadyAccepted -> launchCamera(); // lancer l'action souhaitée
             isExplanationNeeded -> showExplanation(); // afficher une explication
-            else -> launchAppSettings(); // lancer la demande de permission
+            else -> cameraPermissionLauncher.launch(Manifest.permission.CAMERA); // lancer la demande de permission
         }
     }
 
@@ -88,7 +102,7 @@ class UserInfoActivity : AppCompatActivity() {
         // ici on construit une pop-up système (Dialog) pour expliquer la nécessité de la demande de permission
         AlertDialog.Builder(this)
             .setMessage("🥺 On a besoin de la caméra, vraiment! 👉👈")
-            .setPositiveButton("Bon, ok") { _, _ -> /* ouvrir les paramètres de l'app */ }
+            .setPositiveButton("Bon, ok") { _, _ -> launchAppSettings();/* ouvrir les paramètres de l'app */ }
             .setNegativeButton("Nope") { dialog, _ -> dialog.dismiss() }
             .show()
     }
