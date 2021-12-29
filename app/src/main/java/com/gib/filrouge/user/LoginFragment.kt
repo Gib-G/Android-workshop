@@ -1,5 +1,6 @@
 package com.gib.filrouge.user
 
+import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings.Global.putString
@@ -10,10 +11,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.edit
 import androidx.navigation.fragment.findNavController
+import com.gib.filrouge.MainActivity
 import com.gib.filrouge.R
 import com.gib.filrouge.network.Api
+import com.gib.filrouge.tasklist.Task
 
 class LoginFragment : Fragment() {
 
@@ -22,6 +26,12 @@ class LoginFragment : Fragment() {
     private var loginButton: Button? = null
 
     private val userInfoViewModel = UserInfoViewModel()
+
+    // The launcher used to launch the main activity
+    // when login is successful.
+    private val activityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,8 +74,9 @@ class LoginFragment : Fragment() {
                         putString("auth_token_key", userInfoViewModel.loginResponse?.apiToken)
                     }
                     Toast.makeText(context, "Welcome", Toast.LENGTH_LONG).show()
-                    // Redirection to the task list.
-
+                    // Launching the main activity to display the
+                    // task list.
+                    activityLauncher.launch(Intent(activity, MainActivity::class.java))
                 }
             }
             else {
