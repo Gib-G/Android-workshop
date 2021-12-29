@@ -47,6 +47,7 @@ class LoginFragment : Fragment() {
         // Retrieving the input text fields (for email and password).
         emailField = view.findViewById(R.id.fragment_login_email_field)
         passwordField = view.findViewById(R.id.fragment_login_password_field)
+
         // Defining what happens when the login button
         // is pressed.
         loginButton = view.findViewById(R.id.fragment_login_login_button)
