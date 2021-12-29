@@ -1,3 +1,5 @@
 package com.gib.filrouge.user
 
-data class LoginResponse()
+data class LoginResponse(
+    val apiToken: String
+)
