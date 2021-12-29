@@ -2,11 +2,9 @@ package com.gib.filrouge.tasklist
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,15 +18,10 @@ import coil.transform.CircleCropTransformation
 import com.gib.filrouge.R
 import com.gib.filrouge.form.FormActivity
 import com.gib.filrouge.network.Api
-import com.gib.filrouge.network.TasksRepository
-import com.gib.filrouge.network.UserInfo
 import com.gib.filrouge.user.UserInfoActivity
+import com.gib.filrouge.user.UserInfoViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import retrofit2.Response
-import java.util.*
 
 class TaskListFragment : Fragment() {
 
@@ -37,7 +30,8 @@ class TaskListFragment : Fragment() {
 
     private val adapter = TaskListAdapter();
 
-    private val viewModel: TaskListViewModel by viewModels();
+    private val taskListViewModel: TaskListViewModel by viewModels();
+    private val userInfoViewModel: UserInfoViewModel by viewModels();
 
     // Used to launch the form activity (FormActivity.kt).
     // In the lambda, we retrieve the intent sent back to the main activity
@@ -48,7 +42,7 @@ class TaskListFragment : Fragment() {
         // Get the task instance embedded in the intent.
         val newTask = result.data?.getSerializableExtra("task") as Task;
 
-        viewModel.addOrEdit(newTask);
+        taskListViewModel.addOrEdit(newTask);
 
         // In any case, notify for changes!
         adapter.notifyDataSetChanged();
@@ -60,12 +54,10 @@ class TaskListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         // Ne rien mettre avant d'avoir inflate notre layout (fragment_task_list.xml).
         val rootView = inflater.inflate(R.layout.fragment_task_list, container, false);
 
         return rootView;
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -94,7 +86,7 @@ class TaskListFragment : Fragment() {
 
         adapter.onClickDelete = { task ->
 
-            viewModel.delete(task);
+            taskListViewModel.delete(task);
 
             adapter.notifyDataSetChanged();
 
@@ -116,7 +108,7 @@ class TaskListFragment : Fragment() {
         lifecycleScope.launch {
 
             // on lance une coroutine car `collect` est `suspend`
-            viewModel.taskList.collect { newList ->
+            taskListViewModel.taskList.collect { newList ->
 
                 adapter.submitList(newList);
 
@@ -125,37 +117,29 @@ class TaskListFragment : Fragment() {
             }
 
         }
+        lifecycleScope.launch {
+            userInfoViewModel.userInfo.collect { userInfo ->
+                avatar?.load(userInfo?.avatar ?: "https://goo.gl/gEgYUd") {
+                    // Parameter in case of error.
+                    error(R.drawable.ic_launcher_background);
+                    // Some transformations
+                    transformations(CircleCropTransformation());
+                }
+                // Putting user info in the header text view.
+                headerTextView?.text = """${userInfo?.firstName}
+                |${userInfo?.lastName}""".trimMargin();
+            }
+        }
 
     }
 
     override fun onResume() {
-        
+        // Refreshing tasks view model.
+        taskListViewModel.refresh();
+        // Refreshing user view model.
+        userInfoViewModel.refresh();
+
         super.onResume();
-
-        // Retrieving user info from the API.
-        // GET request to the API with the Api.userWebService.getInfo() method.
-        // Ici on ne va pas gérer les cas d'erreur donc on force le crash avec "!!"
-        // launch launches asynchronous code (a coroutine) in which you can call functions
-        // declared as "suspend".
-        lifecycleScope.launch {
-
-            // This method is declared as "suspend".
-            var userInfo = Api.userWebService.getInfo().body()!!;
-            avatar?.load(userInfo.avatar ?: "https://goo.gl/gEgYUd") {
-                // Parameter in case of error.
-                error(R.drawable.ic_launcher_background);
-                // Some transformations
-                transformations(CircleCropTransformation());
-            }
-
-            // Putting user info in the header text view.
-            headerTextView?.text = """${userInfo?.firstName}
-                |${userInfo?.lastName}""".trimMargin();
-
-            // Refreshing tasks repo.
-            viewModel.refresh();
-
-        }
 
     }
 

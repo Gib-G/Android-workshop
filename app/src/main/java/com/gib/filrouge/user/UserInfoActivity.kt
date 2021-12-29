@@ -37,6 +37,8 @@ class UserInfoActivity : AppCompatActivity() {
     val mediaStore by lazy { MediaStoreRepository(this) };
     private lateinit var photoUri: Uri;
 
+    private var viewModel = UserInfoViewModel();
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
@@ -58,6 +60,12 @@ class UserInfoActivity : AppCompatActivity() {
                 location = SharedPrimary
             ).getOrThrow();
         }
+
+        lifecycleScope.launch {
+            viewModel.userInfo.collect { userInfo ->
+
+            }
+        }
     }
 
     override fun onResume() {
@@ -70,6 +78,8 @@ class UserInfoActivity : AppCompatActivity() {
                 location = SharedPrimary
             ).getOrThrow();
         }
+
+        viewModel.refresh();
     }
 
     private val cameraPermissionLauncher =
@@ -133,9 +143,7 @@ class UserInfoActivity : AppCompatActivity() {
 
     private fun handleImage(imageUri: Uri) {
         // afficher l'image dans l'ImageView
-        lifecycleScope.launch {
-            userWebService.updateAvatar(convert(imageUri));
-        }
+        viewModel.updateAvatar(convert(imageUri));
     }
 
     private fun launchCamera() {
