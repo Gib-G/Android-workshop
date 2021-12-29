@@ -143,8 +143,12 @@ class UserInfoActivity : AppCompatActivity() {
     }
 
     private fun handleImage(imageUri: Uri) {
-        // afficher l'image dans l'ImageView
-        viewModel.updateAvatar(convert(imageUri));
+        // Changing the state flow of UserInfoViewModel,
+        // so that collect can be called and the avatar
+        // displayed is refreshed.
+        viewModel.refresh()
+        // Sending the new avatar to the API.
+        viewModel.updateAvatar(convert(imageUri))
     }
 
     private fun launchCamera() {
