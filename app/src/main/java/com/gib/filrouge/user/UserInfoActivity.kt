@@ -8,12 +8,14 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.provider.Settings
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
+import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import coil.load
@@ -32,16 +34,23 @@ import java.util.*
 
 class UserInfoActivity : AppCompatActivity() {
 
-    private val userWebService = Api.userWebService;
+    private val userWebService = Api.userWebService
 
-    private var avatar: ImageView? = null;
-    private var takePictureButton: Button? = null;
-    private var uploadImageButton: Button? = null;
+    private var avatar: ImageView? = null
+    private var takePictureButton: Button? = null
+    private var uploadImageButton: Button? = null
+    private var logoutButton: Button? = null
 
-    val mediaStore by lazy { MediaStoreRepository(this) };
-    private lateinit var photoUri: Uri;
+    val mediaStore by lazy { MediaStoreRepository(this) }
+    private lateinit var photoUri: Uri
 
-    private var viewModel = UserInfoViewModel();
+    private var viewModel = UserInfoViewModel()
+
+    // The launcher used to launch the authentication activity
+    // when the user logs out.
+    private val activityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
@@ -50,12 +59,21 @@ class UserInfoActivity : AppCompatActivity() {
         avatar = findViewById(R.id.image_view);
         takePictureButton = findViewById(R.id.take_picture_button);
         uploadImageButton = findViewById(R.id.upload_image_button);
+        logoutButton = findViewById(R.id.logout_button)
 
         takePictureButton?.setOnClickListener {
             launchCameraWithPermission();
         }
         uploadImageButton?.setOnClickListener {
             galleryLauncher.launch("image/*");
+        }
+        logoutButton?.setOnClickListener {
+            // Erasing the API token from shared preferences.
+            PreferenceManager.getDefaultSharedPreferences(Api.appContext).edit {
+                putString("auth_token_key", "")
+            }
+            // Redirecting to the authentication activity.
+            activityLauncher.launch(Intent(this, AuthenticationActivity::class.java))
         }
 
         lifecycleScope.launchWhenStarted {
