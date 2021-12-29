@@ -1,33 +1,30 @@
 package com.gib.filrouge.user
 
 import android.os.Bundle
+import android.preference.PreferenceManager
+import android.provider.Settings.Global.putString
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import androidx.core.content.edit
+import androidx.navigation.fragment.findNavController
 import com.gib.filrouge.R
+import com.gib.filrouge.network.Api
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [LoginFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class LoginFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var emailField: EditText? = null
+    private var passwordField: EditText? = null
+    private var loginButton: Button? = null
+
+    private val userInfoViewModel = UserInfoViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -38,23 +35,43 @@ class LoginFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment LoginFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LoginFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Retrieving the input text fields (for email and password).
+        emailField = view.findViewById(R.id.fragment_login_email_field)
+        passwordField = view.findViewById(R.id.fragment_login_password_field)
+        // Defining what happens when the login button
+        // is pressed.
+        loginButton = view.findViewById(R.id.fragment_login_login_button)
+        loginButton?.setOnClickListener {
+            // Retrieving what the user has filled in the form.
+            val email = emailField?.text.toString()
+            val password = passwordField?.text.toString()
+            // Checking that the user is not sending empty
+            // data before proceeding.
+            if(email != "" && password != "") {
+                userInfoViewModel.login(LoginForm(email, password))
+                // Login failed.
+                if(userInfoViewModel.loginResponse == null) {
+                    Toast.makeText(context, "Unknown email - password combination", Toast.LENGTH_LONG).show()
+                }
+                // Login successful.
+                else {
+                    // We add the token sent back by the API
+                    // to shared preferences.
+                    PreferenceManager.getDefaultSharedPreferences(context).edit {
+                        putString("auth_token_key", userInfoViewModel.loginResponse?.apiToken)
+                    }
+                    Toast.makeText(context, "Welcome", Toast.LENGTH_LONG).show()
+                    // Redirection to the task list.
+
                 }
             }
+            else {
+                Toast.makeText(context, "Please fill in the fields", Toast.LENGTH_LONG).show()
+            }
+        }
     }
+
 }
