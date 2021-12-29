@@ -40,4 +40,12 @@ class UserInfoRepository {
         return null;
     }
 
+    suspend fun signUp(signupDetails: SignUpForm): AuthenticationResponse? {
+        var response = userWebService.signUp(signupDetails);
+        if(response.isSuccessful) {
+            return response.body();
+        }
+        return null;
+    }
+
 }

@@ -53,4 +53,10 @@ class UserInfoViewModel: ViewModel() {
         }
     }
 
+    fun signUp(signupDetails: SignUpForm) {
+        viewModelScope.launch {
+            authenticationResponse = repository.signUp(signupDetails)
+        }
+    }
+
 }
