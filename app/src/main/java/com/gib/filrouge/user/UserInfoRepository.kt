@@ -33,4 +33,12 @@ class UserInfoRepository {
         return null;
     }
 
+    suspend fun login(loginDetails: LoginForm): LoginResponse? {
+        var response = userWebService.login(loginDetails);
+        if(response.isSuccessful) {
+            return response.body();
+        }
+        return null;
+    }
+
 }

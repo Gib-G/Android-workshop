@@ -20,6 +20,8 @@ class UserInfoViewModel: ViewModel() {
     private var _userInfo = MutableStateFlow<UserInfo?>(null);
     var userInfo = _userInfo.asStateFlow() ;
 
+    var loginResponse: LoginResponse? = null;
+
     fun refresh() {
         viewModelScope.launch {
             var data = repository.refresh();
@@ -47,6 +49,12 @@ class UserInfoViewModel: ViewModel() {
                 _userInfo.value = data;
                 userInfo = _userInfo;
             }
+        }
+    }
+
+    fun login(loginDetails: LoginForm) {
+        viewModelScope.launch {
+            loginResponse = repository.login(loginDetails)
         }
     }
 
