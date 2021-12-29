@@ -11,10 +11,13 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.gib.filrouge.R
 import com.gib.filrouge.network.Api
 import com.google.android.material.snackbar.Snackbar
@@ -31,6 +34,7 @@ class UserInfoActivity : AppCompatActivity() {
 
     private val userWebService = Api.userWebService;
 
+    private var avatar: ImageView? = null;
     private var takePictureButton: Button? = null;
     private var uploadImageButton: Button? = null;
 
@@ -43,6 +47,7 @@ class UserInfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
 
+        avatar = findViewById(R.id.image_view);
         takePictureButton = findViewById(R.id.take_picture_button);
         uploadImageButton = findViewById(R.id.upload_image_button);
 
@@ -63,23 +68,19 @@ class UserInfoActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             viewModel.userInfo.collect { userInfo ->
-
+                avatar?.load(userInfo?.avatar ?: "https://goo.gl/gEgYUd") {
+                    // In case of error.
+                    error(R.drawable.ic_launcher_background);
+                    // Some transformation.
+                    transformations(CircleCropTransformation());
+                }
             }
         }
     }
 
     override fun onResume() {
-        super.onResume();
-
-        lifecycleScope.launchWhenStarted {
-            photoUri = mediaStore.createMediaUri(
-                filename = "picture-${UUID.randomUUID()}.jpg",
-                type = FileType.IMAGE,
-                location = SharedPrimary
-            ).getOrThrow();
-        }
-
         viewModel.refresh();
+        super.onResume();
     }
 
     private val cameraPermissionLauncher =
