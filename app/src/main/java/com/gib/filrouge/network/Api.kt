@@ -1,5 +1,7 @@
 package com.gib.filrouge.network
 
+import android.content.Context
+import android.preference.PreferenceManager
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -10,7 +12,6 @@ object Api {
 
     // constantes qui serviront à faire les requêtes
     private const val BASE_URL = "https://android-tasks-api.herokuapp.com/api/"
-    private const val TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo1NDAsImV4cCI6MTY3MDI1NjA0MX0.pxPoUWylu5uqdRqiW9rceKsYWyGm5itpIz_k0FeNOL4"
 
     // client HTTP
     private val okHttpClient by lazy {
@@ -18,7 +19,7 @@ object Api {
             .addInterceptor { chain ->
                 // intercepteur qui ajoute le `header` d'authentification avec votre token:
                 val newRequest = chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer $TOKEN")
+                    .addHeader("Authorization", "Bearer ${PreferenceManager.getDefaultSharedPreferences(appContext).getString("auth_token_key", "")}")
                     .build()
                 chain.proceed(newRequest)
             }
@@ -50,6 +51,12 @@ object Api {
     // Service to query API on tasks.
     val tasksWebService: TasksWebService by lazy {
         retrofit.create(TasksWebService::class.java)
+    }
+
+    lateinit var appContext: Context
+
+    fun setUpContext(context: Context) {
+        appContext = context
     }
 
 }
