@@ -18,7 +18,8 @@ class TaskListViewModel : ViewModel() {
         viewModelScope.launch {
             var taskList = repository.refresh();
             if (taskList != null) {
-                _taskList.value = taskList; }
+                _taskList.value = taskList;
+            }
         }
     }
 
