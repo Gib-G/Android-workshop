@@ -3,7 +3,6 @@ package com.gib.filrouge.user
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.provider.Settings.Global.putString
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +12,8 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.edit
-import androidx.navigation.fragment.findNavController
 import com.gib.filrouge.MainActivity
 import com.gib.filrouge.R
-import com.gib.filrouge.network.Api
-import com.gib.filrouge.tasklist.Task
 
 class LoginFragment : Fragment() {
 
@@ -63,7 +59,7 @@ class LoginFragment : Fragment() {
             if(email != "" && password != "") {
                 userInfoViewModel.login(LoginForm(email, password))
                 // Login failed.
-                if(userInfoViewModel.loginResponse == null) {
+                if(userInfoViewModel.authenticationResponse == null) {
                     Toast.makeText(context, "Unknown email - password combination", Toast.LENGTH_LONG).show()
                 }
                 // Login successful.
@@ -71,7 +67,7 @@ class LoginFragment : Fragment() {
                     // We add the token sent back by the API
                     // to shared preferences.
                     PreferenceManager.getDefaultSharedPreferences(context).edit {
-                        putString("auth_token_key", userInfoViewModel.loginResponse?.apiToken)
+                        putString("auth_token_key", userInfoViewModel.authenticationResponse?.apiToken)
                     }
                     Toast.makeText(context, "Welcome", Toast.LENGTH_LONG).show()
                     // Launching the main activity to display the

@@ -1,17 +1,12 @@
 package com.gib.filrouge.user
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gib.filrouge.network.TasksRepository
 import com.gib.filrouge.network.UserInfo
-import com.gib.filrouge.tasklist.Task
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
 
 class UserInfoViewModel: ViewModel() {
 
@@ -20,7 +15,7 @@ class UserInfoViewModel: ViewModel() {
     private var _userInfo = MutableStateFlow<UserInfo?>(null);
     var userInfo = _userInfo.asStateFlow() ;
 
-    var loginResponse: LoginResponse? = null;
+    var authenticationResponse: AuthenticationResponse? = null;
 
     fun refresh() {
         viewModelScope.launch {
@@ -54,7 +49,7 @@ class UserInfoViewModel: ViewModel() {
 
     fun login(loginDetails: LoginForm) {
         viewModelScope.launch {
-            loginResponse = repository.login(loginDetails)
+            authenticationResponse = repository.login(loginDetails)
         }
     }
 

@@ -1,6 +1,5 @@
 package com.gib.filrouge.user
 
-import android.net.Uri
 import com.gib.filrouge.network.Api
 import com.gib.filrouge.network.UserInfo
 import okhttp3.MultipartBody
@@ -33,7 +32,7 @@ class UserInfoRepository {
         return null;
     }
 
-    suspend fun login(loginDetails: LoginForm): LoginResponse? {
+    suspend fun login(loginDetails: LoginForm): AuthenticationResponse? {
         var response = userWebService.login(loginDetails);
         if(response.isSuccessful) {
             return response.body();
