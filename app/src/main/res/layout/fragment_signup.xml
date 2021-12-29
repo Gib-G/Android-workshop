@@ -12,18 +12,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="Firstname"
         android:inputType="textPersonName"
-        android:minHeight="48dp"
-        android:text="Firstname" />
+        android:minHeight="48dp" />
 
     <EditText
         android:id="@+id/fragment_signup_lastname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="Lastname"
         android:inputType="textPersonName"
-        android:minHeight="48dp"
-        android:text="Lastname" />
+        android:minHeight="48dp" />
 
     <EditText
         android:id="@+id/fragment_signup_email_field"

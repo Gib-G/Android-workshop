@@ -28,16 +28,16 @@
             android:layout_width="348dp"
             android:layout_height="54dp"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Task name" />
+            android:hint="Task name"
+            android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/taskDescriptionInput"
             android:layout_width="348dp"
             android:layout_height="54dp"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Task description" />
+            android:hint="Task description"
+            android:inputType="textPersonName" />
 
         <Button
             android:id="@+id/validateTaskCreation"
