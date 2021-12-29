@@ -2,6 +2,7 @@ package com.gib.filrouge.network
 
 import com.gib.filrouge.user.LoginForm
 import com.gib.filrouge.user.AuthenticationResponse
+import com.gib.filrouge.user.SignUpForm
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
@@ -21,6 +22,9 @@ interface UserWebService {
     suspend fun update(@Body user: UserInfo): Response<UserInfo>
 
     @POST("users/login")
-    suspend fun login(@Body user: LoginForm): Response<AuthenticationResponse>
+    suspend fun login(@Body loginDetails: LoginForm): Response<AuthenticationResponse>
+
+    @POST("users/sign_up")
+    suspend fun signUp(@Body signupDetails: SignUpForm): Response<AuthenticationResponse>
 
 }
