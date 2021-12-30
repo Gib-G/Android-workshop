@@ -18,6 +18,7 @@ import androidx.activity.result.launch
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.gib.filrouge.R
@@ -73,7 +74,8 @@ class UserInfoActivity : AppCompatActivity() {
                 putString("auth_token_key", "")
             }
             // Redirecting to the authentication activity.
-            activityLauncher.launch(Intent(this, AuthenticationActivity::class.java))
+            //activityLauncher.launch(Intent(this, AuthenticationActivity::class.java))
+            //findNavController(window.decorView.id).navigate()
         }
 
         lifecycleScope.launchWhenStarted {

@@ -1,13 +1,11 @@
 package com.gib.filrouge
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.edit
+import androidx.navigation.findNavController
 import com.gib.filrouge.network.Api
-import com.gib.filrouge.user.AuthenticationActivity
 
 // The activity launched whe the user launches the app.
 class MainActivity : AppCompatActivity() {
@@ -27,8 +25,9 @@ class MainActivity : AppCompatActivity() {
         // If the token does not exist, we redirect to the authentication
         // activity to retrieve it from the API via a login or signup process.
         if(token == "") {
-            activityLauncher.launch(Intent(this, AuthenticationActivity::class.java))
+            //activityLauncher.launch(Intent(this, AuthenticationActivity::class.java))
+            findNavController(window.decorView.id).navigate(R.id.action_taskListFragment_to_authenticationFragment)
         }
     }
-    
+
 }

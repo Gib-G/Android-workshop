@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.edit
+import androidx.navigation.fragment.findNavController
 import com.gib.filrouge.MainActivity
 import com.gib.filrouge.R
 
@@ -73,7 +74,8 @@ class LoginFragment : Fragment() {
                     Toast.makeText(context, "Welcome", Toast.LENGTH_LONG).show()
                     // Launching the main activity to display the
                     // task list.
-                    activityLauncher.launch(Intent(activity, MainActivity::class.java))
+                    //activityLauncher.launch(Intent(activity, MainActivity::class.java))
+                    findNavController().navigate(R.id.action_loginFragment_to_taskListFragment)
                 }
             }
             else {
