@@ -4,21 +4,21 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.launch
+import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.content.edit
-import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.gib.filrouge.R
@@ -30,10 +30,11 @@ import com.google.modernstorage.mediastore.SharedPrimary
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
 import java.util.*
 
-class UserInfoActivity : AppCompatActivity() {
+class UserInfoFragment : Fragment() {
+
+    private val appContext = Api.appContext
 
     private val userWebService = Api.userWebService
 
@@ -42,25 +43,29 @@ class UserInfoActivity : AppCompatActivity() {
     private var uploadImageButton: Button? = null
     private var logoutButton: Button? = null
 
-    val mediaStore by lazy { MediaStoreRepository(this) }
+    val mediaStore by lazy { MediaStoreRepository(appContext) }
     private lateinit var photoUri: Uri
 
     private var viewModel = UserInfoViewModel()
 
-    // The launcher used to launch the authentication activity
-    // when the user logs out.
-    private val activityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Ne rien mettre avant d'avoir inflate notre layout (fragment_task_list.xml).
+        val rootView = inflater.inflate(R.layout.activity_user_info, container, false);
 
+        return rootView;
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_info);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        avatar = findViewById(R.id.image_view);
-        takePictureButton = findViewById(R.id.take_picture_button);
-        uploadImageButton = findViewById(R.id.upload_image_button);
-        logoutButton = findViewById(R.id.logout_button)
+        avatar = view?.findViewById(R.id.image_view);
+        takePictureButton = view?.findViewById(R.id.take_picture_button);
+        uploadImageButton = view?.findViewById(R.id.upload_image_button);
+        logoutButton = view?.findViewById(R.id.logout_button)
 
         takePictureButton?.setOnClickListener {
             launchCameraWithPermission();
@@ -70,12 +75,12 @@ class UserInfoActivity : AppCompatActivity() {
         }
         logoutButton?.setOnClickListener {
             // Erasing the API token from shared preferences.
-            PreferenceManager.getDefaultSharedPreferences(Api.appContext).edit {
+            PreferenceManager.getDefaultSharedPreferences(appContext).edit {
                 putString("auth_token_key", "")
             }
             // Redirecting to the authentication activity.
             //activityLauncher.launch(Intent(this, AuthenticationActivity::class.java))
-            //findNavController(window.decorView.id).navigate()
+            findNavController().navigate(R.id.action_userInfoFragment_to_authenticationFragment)
         }
 
         lifecycleScope.launchWhenStarted {
@@ -112,7 +117,7 @@ class UserInfoActivity : AppCompatActivity() {
     private val cameraLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicture()) { accepted ->
             if (accepted) handleImage(photoUri);
-            else Snackbar.make(window.decorView.rootView, "Échec!", Snackbar.LENGTH_LONG).show();
+            else Snackbar.make(view!!, "Échec!", Snackbar.LENGTH_LONG).show();
         }
 
 
@@ -124,7 +129,7 @@ class UserInfoActivity : AppCompatActivity() {
 
     private fun launchCameraWithPermission() {
         val camPermission = Manifest.permission.CAMERA
-        val permissionStatus = checkSelfPermission(camPermission)
+        val permissionStatus = checkSelfPermission(appContext, camPermission)
         val isAlreadyAccepted = permissionStatus == PackageManager.PERMISSION_GRANTED
         val isExplanationNeeded = shouldShowRequestPermissionRationale(camPermission)
         when {
@@ -136,7 +141,7 @@ class UserInfoActivity : AppCompatActivity() {
 
     private fun showExplanation() {
         // ici on construit une pop-up système (Dialog) pour expliquer la nécessité de la demande de permission
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(appContext)
             .setMessage("🥺 On a besoin de la caméra, vraiment! 👉👈")
             .setPositiveButton("Bon, ok") { _, _ -> launchAppSettings();/* ouvrir les paramètres de l'app */ }
             .setNegativeButton("Nope") { dialog, _ -> dialog.dismiss() }
@@ -147,7 +152,7 @@ class UserInfoActivity : AppCompatActivity() {
         // Cet intent permet d'ouvrir les paramètres de l'app (pour modifier les permissions déjà refusées par ex)
         val intent = Intent(
             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-            Uri.fromParts("package", packageName, null)
+            Uri.fromParts("package", appContext.packageName, null)
         )
         // ici pas besoin de vérifier avant car on vise un écran système:
         startActivity(intent)
@@ -158,7 +163,7 @@ class UserInfoActivity : AppCompatActivity() {
         return MultipartBody.Part.createFormData(
             name = "avatar",
             filename = "temp.jpeg",
-            body = contentResolver.openInputStream(uri)!!.readBytes().toRequestBody()
+            body = appContext.contentResolver.openInputStream(uri)!!.readBytes().toRequestBody()
         )
     }
 
