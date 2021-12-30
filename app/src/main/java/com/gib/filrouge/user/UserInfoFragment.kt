@@ -54,7 +54,7 @@ class UserInfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Ne rien mettre avant d'avoir inflate notre layout (fragment_task_list.xml).
-        val rootView = inflater.inflate(R.layout.activity_user_info, container, false);
+        val rootView = inflater.inflate(R.layout.fragment_user_info, container, false);
 
         return rootView;
     }
