@@ -15,9 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FilRouge">
         <activity
-            android:name=".user.UserInfoActivity"
-            android:exported="false" />
-        <activity
             android:name=".form.FormActivity"
             android:exported="false" />
         <activity
