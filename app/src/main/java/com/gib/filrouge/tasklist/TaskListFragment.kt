@@ -2,6 +2,7 @@ package com.gib.filrouge.tasklist
 
 import android.content.Intent
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -18,7 +21,7 @@ import coil.transform.CircleCropTransformation
 import com.gib.filrouge.R
 import com.gib.filrouge.form.FormActivity
 import com.gib.filrouge.network.Api
-import com.gib.filrouge.user.UserInfoActivity
+import com.gib.filrouge.user.UserInfoFragment
 import com.gib.filrouge.user.UserInfoViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
@@ -49,6 +52,19 @@ class TaskListFragment : Fragment() {
 
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Retrieves the API token from shared preferences.
+        val token = PreferenceManager.getDefaultSharedPreferences(Api.appContext).getString("auth_token_key", "")
+        // If the token does not exist, we redirect to the authentication
+        // activity to retrieve it from the API via a login or signup process.
+        if(token == "") {
+            //activityLauncher.launch(Intent(this, AuthenticationActivity::class.java))
+            findNavController().navigate(R.id.action_taskListFragment_to_authenticationFragment)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -71,7 +87,8 @@ class TaskListFragment : Fragment() {
         avatar = view?.findViewById(R.id.avatar);
 
         avatar?.setOnClickListener {
-            formLauncher.launch(Intent(activity, UserInfoActivity::class.java));
+            //formLauncher.launch(Intent(activity, UserInfoFragment::class.java));
+            findNavController().navigate(R.id.action_taskListFragment_to_userInfoFragment)
         }
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view);
