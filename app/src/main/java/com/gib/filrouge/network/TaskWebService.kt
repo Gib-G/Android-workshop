@@ -5,7 +5,7 @@ import retrofit2.Response
 import retrofit2.http.*
 
 // This interface is used by Retrofit to make
-// the right HTTP requests to the API.
+// the right task-related HTTP requests to the API.
 interface TaskWebService {
 
     @GET("tasks")
