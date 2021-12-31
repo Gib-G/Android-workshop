@@ -41,15 +41,13 @@ class TaskListFragment : Fragment() {
     // by the form activity.
     // We then process that intent accordingly.
     private val formLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-
         // Get the task instance embedded in the intent.
-        val newTask = result.data?.getSerializableExtra("task") as Task;
-
-        taskListViewModel.addOrEdit(newTask);
-
-        // In any case, notify for changes!
-        adapter.notifyDataSetChanged();
-
+        val task = result.data?.getSerializableExtra("task") as Task?;
+        if(task != null) {
+            taskListViewModel.addOrEdit(task);
+            // In any case, notify for changes!
+            adapter.notifyDataSetChanged();
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
