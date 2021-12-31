@@ -9,7 +9,7 @@ data class Task
     @SerialName("id")
     val id: String,
     @SerialName("title")
-    val title: String,
+    val name: String,
     @SerialName("description")
     val description: String
     ) : java.io.Serializable

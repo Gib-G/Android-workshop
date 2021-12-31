@@ -82,7 +82,7 @@ class FormActivity : AppCompatActivity() {
         }
         else {
             text.text = "Let's change a few things here..."
-            taskNameField.setText(task?.title)
+            taskNameField.setText(task?.name)
             taskDescriptionField.setText(task?.description)
             okButton.text = "Save"
         }
