@@ -7,10 +7,10 @@ import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
 
+// This interface is used by Retrofit to make
+// the right user-related HTTP requests to the API.
 interface UserWebService {
 
-    // "suspend" means this function takes time to execute
-    // (whatever that means...).
     @GET("users/info")
     suspend fun getInfo(): Response<UserInfo>
 
