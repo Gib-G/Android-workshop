@@ -1,4 +1,4 @@
-package com.gib.filrouge.tasklist
+package com.gib.filrouge.task
 
 import android.content.Intent
 import android.os.Bundle
@@ -20,7 +20,7 @@ import coil.load
 import coil.transform.CircleCropTransformation
 import com.gib.filrouge.R
 import com.gib.filrouge.form.FormActivity
-import com.gib.filrouge.network.Api
+import com.gib.filrouge.Api
 import com.gib.filrouge.user.UserViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch

@@ -1,7 +1,9 @@
-package com.gib.filrouge.network
+package com.gib.filrouge
 
 import android.content.Context
 import android.preference.PreferenceManager
+import com.gib.filrouge.task.TaskWebService
+import com.gib.filrouge.user.UserWebService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -30,7 +32,9 @@ object Api {
                 // The user's token is retrieved from shared preferences
                 // (key "auth_token_key").
                 val newRequest = chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer ${PreferenceManager.getDefaultSharedPreferences(appContext).getString("auth_token_key", "")}")
+                    .addHeader("Authorization", "Bearer ${PreferenceManager.getDefaultSharedPreferences(
+                        appContext
+                    ).getString("auth_token_key", "")}")
                     .build()
                 chain.proceed(newRequest)
             }

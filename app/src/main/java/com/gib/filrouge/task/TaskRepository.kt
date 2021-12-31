@@ -1,6 +1,6 @@
-package com.gib.filrouge.network
+package com.gib.filrouge.task
 
-import com.gib.filrouge.tasklist.Task
+import com.gib.filrouge.Api
 
 // Makes HTTP requests to the API using the methods
 // provided by the task web service.

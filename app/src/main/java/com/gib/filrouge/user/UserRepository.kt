@@ -1,7 +1,6 @@
 package com.gib.filrouge.user
 
-import com.gib.filrouge.network.Api
-import com.gib.filrouge.network.UserInfo
+import com.gib.filrouge.Api
 import okhttp3.MultipartBody
 
 // Makes user-related HTTP requests to the API

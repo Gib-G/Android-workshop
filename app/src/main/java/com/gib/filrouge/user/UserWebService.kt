@@ -1,8 +1,5 @@
-package com.gib.filrouge.network
+package com.gib.filrouge.user
 
-import com.gib.filrouge.user.LoginForm
-import com.gib.filrouge.user.AuthenticationResponse
-import com.gib.filrouge.user.SignUpForm
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*

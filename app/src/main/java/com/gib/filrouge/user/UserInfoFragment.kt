@@ -22,7 +22,7 @@ import androidx.navigation.fragment.findNavController
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.gib.filrouge.R
-import com.gib.filrouge.network.Api
+import com.gib.filrouge.Api
 import com.google.android.material.snackbar.Snackbar
 import com.google.modernstorage.mediastore.FileType
 import com.google.modernstorage.mediastore.MediaStoreRepository

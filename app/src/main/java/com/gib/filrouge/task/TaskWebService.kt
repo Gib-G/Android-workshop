@@ -1,6 +1,5 @@
-package com.gib.filrouge.network
+package com.gib.filrouge.task
 
-import com.gib.filrouge.tasklist.Task
 import retrofit2.Response
 import retrofit2.http.*
 

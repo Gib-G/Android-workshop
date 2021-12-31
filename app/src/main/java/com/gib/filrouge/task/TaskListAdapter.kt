@@ -1,4 +1,4 @@
-package com.gib.filrouge.tasklist
+package com.gib.filrouge.task
 
 import android.view.LayoutInflater
 import android.view.View

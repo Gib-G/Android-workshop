@@ -1,8 +1,7 @@
-package com.gib.filrouge.tasklist
+package com.gib.filrouge.task
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gib.filrouge.network.TaskRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

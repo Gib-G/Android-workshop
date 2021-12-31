@@ -1,4 +1,4 @@
-package com.gib.filrouge.network
+package com.gib.filrouge.user
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

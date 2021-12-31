@@ -7,8 +7,8 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.gib.filrouge.R
-import com.gib.filrouge.network.Api
-import com.gib.filrouge.tasklist.Task
+import com.gib.filrouge.Api
+import com.gib.filrouge.task.Task
 import java.util.*
 
 // The activity launched when the user

@@ -1,7 +1,6 @@
 package com.gib.filrouge
 
 import android.app.Application
-import com.gib.filrouge.network.Api
 
 class App: Application() {
 
