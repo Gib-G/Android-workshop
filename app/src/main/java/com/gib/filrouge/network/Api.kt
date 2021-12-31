@@ -59,8 +59,8 @@ object Api {
     }
 
     // Service for task-related queries to the API.
-    val tasksWebService: TasksWebService by lazy {
-        retrofit.create(TasksWebService::class.java)
+    val taskWebService: TaskWebService by lazy {
+        retrofit.create(TaskWebService::class.java)
     }
 
 }

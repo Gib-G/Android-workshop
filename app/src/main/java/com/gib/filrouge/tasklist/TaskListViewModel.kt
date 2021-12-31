@@ -2,14 +2,14 @@ package com.gib.filrouge.tasklist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gib.filrouge.network.TasksRepository
+import com.gib.filrouge.network.TaskRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class TaskListViewModel : ViewModel() {
 
-    private val repository = TasksRepository();
+    private val repository = TaskRepository();
 
     private val _taskList = MutableStateFlow<List<Task>>(emptyList());
     public val taskList: StateFlow<List<Task>> = _taskList;
