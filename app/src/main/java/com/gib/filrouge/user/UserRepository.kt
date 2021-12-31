@@ -4,7 +4,9 @@ import com.gib.filrouge.network.Api
 import com.gib.filrouge.network.UserInfo
 import okhttp3.MultipartBody
 
-class UserInfoRepository {
+// Makes user-related HTTP requests to the API
+// using UserWebService.
+class UserRepository {
 
     private val userWebService = Api.userWebService;
 

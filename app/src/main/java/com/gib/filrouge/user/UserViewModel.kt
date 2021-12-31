@@ -10,7 +10,7 @@ import okhttp3.MultipartBody
 
 class UserViewModel: ViewModel() {
 
-    private val repository = UserInfoRepository();
+    private val repository = UserRepository();
 
     private var _userInfo = MutableStateFlow<UserInfo?>(null);
     var userInfo = _userInfo.asStateFlow() ;
