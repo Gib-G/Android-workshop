@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 
-class UserInfoViewModel: ViewModel() {
+class UserViewModel: ViewModel() {
 
     private val repository = UserInfoRepository();
 

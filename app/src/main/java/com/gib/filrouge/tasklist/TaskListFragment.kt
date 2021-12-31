@@ -21,7 +21,7 @@ import coil.transform.CircleCropTransformation
 import com.gib.filrouge.R
 import com.gib.filrouge.form.FormActivity
 import com.gib.filrouge.network.Api
-import com.gib.filrouge.user.UserInfoViewModel
+import com.gib.filrouge.user.UserViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 
@@ -34,8 +34,8 @@ class TaskListFragment : Fragment() {
     private val adapter = TaskListAdapter()
 
     // The view models for user- and task-related logic.
-    private val taskViewModel: TaskListViewModel by viewModels()
-    private val userViewModel: UserInfoViewModel by viewModels()
+    private val taskViewModel: TaskViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
 
     // The navigation controller managing this fragment.
     private lateinit var navController: NavController

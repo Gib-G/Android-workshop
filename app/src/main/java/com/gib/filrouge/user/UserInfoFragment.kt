@@ -46,7 +46,7 @@ class UserInfoFragment : Fragment() {
     val mediaStore by lazy { MediaStoreRepository(appContext) }
     private lateinit var photoUri: Uri
 
-    private var viewModel = UserInfoViewModel()
+    private var viewModel = UserViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
