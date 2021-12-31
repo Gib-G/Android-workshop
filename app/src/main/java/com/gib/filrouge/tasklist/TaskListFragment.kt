@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,7 +38,7 @@ class TaskListFragment : Fragment() {
     private val userViewModel: UserInfoViewModel by viewModels()
 
     // The navigation controller managing this fragment.
-    private val navController = findNavController()
+    private lateinit var navController: NavController
 
     // Used to launch the form activity when the user wants
     // to create or edit a task.
@@ -59,6 +60,9 @@ class TaskListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // We retrieve the navigation controller.
+        navController = findNavController()
+        
         // Retrieves the API token from shared preferences.
         val token = PreferenceManager.getDefaultSharedPreferences(Api.appContext).getString("auth_token_key", "")
         // If the token does not exist, we redirect to the authentication
