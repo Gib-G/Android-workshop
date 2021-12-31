@@ -12,7 +12,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,32 +20,39 @@ import coil.transform.CircleCropTransformation
 import com.gib.filrouge.R
 import com.gib.filrouge.form.FormActivity
 import com.gib.filrouge.network.Api
-import com.gib.filrouge.user.UserInfoFragment
 import com.gib.filrouge.user.UserInfoViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 
+// The fragment showing the task list to the user.
 class TaskListFragment : Fragment() {
 
-    private var headerTextView : TextView? = null;
-    private var avatar: ImageView? = null;
+    // This fragment uses a recycler view to show the
+    // different user's tasks.
+    // This is the list adapter for that recycler view.
+    private val adapter = TaskListAdapter()
 
-    private val adapter = TaskListAdapter();
+    // The view models for user- and task-related logic.
+    private val taskViewModel: TaskListViewModel by viewModels()
+    private val userViewModel: UserInfoViewModel by viewModels()
 
-    private val taskListViewModel: TaskListViewModel by viewModels();
-    private val userInfoViewModel: UserInfoViewModel by viewModels();
+    // The navigation controller managing this fragment.
+    private val navController = findNavController()
 
-    // Used to launch the form activity (FormActivity.kt).
-    // In the lambda, we retrieve the intent sent back to the main activity
-    // by the form activity.
-    // We then process that intent accordingly.
+    // Used to launch the form activity when the user wants
+    // to create or edit a task.
+    // The lambda catches the result sent back by the form
+    // activity when the user has finished editing or creating
+    // the task.
     private val formLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        // Get the task instance embedded in the intent.
-        val task = result.data?.getSerializableExtra("task") as Task?;
+        // We retrieve the task instance embedded in the intent
+        // sent back by the form activity.
+        val task = result.data?.getSerializableExtra("task") as Task?
         if(task != null) {
-            taskListViewModel.addOrEdit(task);
-            // In any case, notify for changes!
-            adapter.notifyDataSetChanged();
+            // This ultimately sends the task data to the API.
+            taskViewModel.addOrEdit(task)
+            // We refresh the recycler view.
+            adapter.notifyDataSetChanged()
         }
     }
 
@@ -58,8 +64,7 @@ class TaskListFragment : Fragment() {
         // If the token does not exist, we redirect to the authentication
         // activity to retrieve it from the API via a login or signup process.
         if(token == "") {
-            //activityLauncher.launch(Intent(this, AuthenticationActivity::class.java))
-            findNavController().navigate(R.id.action_taskListFragment_to_authenticationFragment)
+            navController.navigate(R.id.action_taskListFragment_to_authenticationFragment)
         }
     }
 
@@ -68,94 +73,86 @@ class TaskListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Ne rien mettre avant d'avoir inflate notre layout (fragment_task_list.xml).
-        val rootView = inflater.inflate(R.layout.fragment_task_list, container, false);
-
-        return rootView;
+        return inflater.inflate(R.layout.fragment_task_list, container, false);
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        super.onViewCreated(view, savedInstanceState);
+        // Retrieving some views of the layout.
+        // The header is used to display the user's first and last names.
+        val header = view?.findViewById<TextView>(R.id.fragment_task_list_header)
+        val avatar = view?.findViewById<ImageView>(R.id.fragment_task_list_avatar)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.fragment_task_list_recycler_view)
+        val addButton = view.findViewById<FloatingActionButton>(R.id.fragment_task_list_add_task_button)
 
-        // Gets the header text view.
-        headerTextView = activity?.findViewById<TextView>(R.id.header);
-
-        // Gets the user avatar image view.
-        avatar = view?.findViewById(R.id.avatar);
-
-        avatar?.setOnClickListener {
-            //formLauncher.launch(Intent(activity, UserInfoFragment::class.java));
-            findNavController().navigate(R.id.action_taskListFragment_to_userInfoFragment)
+        // Configuring the recycler view of the fragment.
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.adapter = adapter
+        // Bellow, we give proper definitions to the callback
+        // functions declared in the TaskListAdapter class.
+        adapter.onClickDelete = { task ->
+            // This ultimately deletes the task on the API.
+            taskViewModel.delete(task)
+            adapter.notifyDataSetChanged()
+        }
+        adapter.onClickEdit = { task ->
+            // When the user clicks on a task's edit button,
+            // we launch the form activity by passing it the task
+            // instance the user wants to edit.
+            formLauncher.launch(Intent(activity, FormActivity::class.java).putExtra("task", task))
         }
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view);
-        recyclerView.layoutManager = LinearLayoutManager(activity);
-        recyclerView.adapter = adapter;
-
-        val addButton = view.findViewById<FloatingActionButton>(R.id.floatingActionButton);
+        // Setting some callback functions for click events.
+        avatar?.setOnClickListener {
+            // When the user's avatar is clicked, we redirect
+            // to the user info fragment.
+            navController.navigate(R.id.action_taskListFragment_to_userInfoFragment)
+        }
         addButton.setOnClickListener {
             // Launches the form activity when the add button is clicked.
             formLauncher.launch(Intent(activity, FormActivity::class.java));
-        };
-
-        adapter.onClickDelete = { task ->
-
-            taskListViewModel.delete(task);
-
-            adapter.notifyDataSetChanged();
-
-        };
-
-        adapter.onClickEdit = { task ->
-
-            // Creating the intent to send to the creation/edit form to edit task.
-            val intent = Intent(activity, FormActivity::class.java);
-
-            // Putting the task instance to edit in the intent.
-            intent.putExtra("task", task);
-
-            // Launching the form activity with the created intent.
-            formLauncher.launch(intent);
-
         }
 
+        // Collecting the state flows.
+        // Basically, we define bellow what happens when
+        // the task list and the user's avatar change (by
+        // linking callbacks to the state flows that represent them
+        // inside the view models).
         lifecycleScope.launch {
-
-            // on lance une coroutine car `collect` est `suspend`
-            taskListViewModel.taskList.collect { newList ->
-
+            taskViewModel.taskList.collect { newList ->
+                // The task list has changed:
+                // we notify the recycler view's adapter to refresh the view.
                 adapter.submitList(newList);
-
                 adapter.notifyDataSetChanged();
-
             }
-
         }
         lifecycleScope.launch {
-            userInfoViewModel.userInfo.collect { userInfo ->
+            userViewModel.userInfo.collect { userInfo ->
+                // User's info have changed.
+                // Using Coil to load the image located at the URI pointed to
+                // by UserInfo::avatar.
                 avatar?.load(userInfo?.avatar ?: "https://goo.gl/gEgYUd") {
-                    // Parameter in case of error.
+                    // The asset that gets displayed as the user's avatar
+                    // if Coil fails to load the right image.
                     error(R.drawable.ic_launcher_background);
-                    // Some transformations
+                    // Circle-cropping the avatar.
                     transformations(CircleCropTransformation());
                 }
-                // Putting user info in the header text view.
-                headerTextView?.text = """${userInfo?.firstName}
+                // Refreshing the info displayed within the header.
+                header?.text = """${userInfo?.firstName}
                 |${userInfo?.lastName}""".trimMargin();
             }
         }
-
     }
 
     override fun onResume() {
-        // Refreshing tasks view model.
-        taskListViewModel.refresh();
-        // Refreshing user view model.
-        userInfoViewModel.refresh();
+        // Fetching the task list from the API.
+        taskViewModel.refresh();
+        // Fetching the user's info from the API.
+        userViewModel.refresh();
 
         super.onResume();
-
     }
 
 }
