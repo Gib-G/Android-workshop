@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/activity_form_text"
             android:layout_width="294dp"
             android:layout_height="139dp"
             android:layout_marginBottom="96dp"
@@ -24,7 +24,7 @@
             android:textSize="34sp" />
 
         <EditText
-            android:id="@+id/taskNameInput"
+            android:id="@+id/activity_form_task_name_field"
             android:layout_width="348dp"
             android:layout_height="54dp"
             android:ems="10"
@@ -32,7 +32,7 @@
             android:inputType="textPersonName" />
 
         <EditText
-            android:id="@+id/taskDescriptionInput"
+            android:id="@+id/activity_form_task_description_field"
             android:layout_width="348dp"
             android:layout_height="54dp"
             android:ems="10"
@@ -40,7 +40,7 @@
             android:inputType="textPersonName" />
 
         <Button
-            android:id="@+id/validateTaskCreation"
+            android:id="@+id/activity_form_ok_button"
             android:layout_width="252dp"
             android:layout_height="59dp"
             android:text="OK" />
