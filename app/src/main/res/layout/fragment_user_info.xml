@@ -10,7 +10,8 @@
     <ImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
         tools:ignore="ImageContrastCheck"
         tools:srcCompat="@tools:sample/avatars" />
 
@@ -18,17 +19,23 @@
         android:id="@+id/fragment_user_info_browse_gallery_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Browse gallery" />
+        android:layout_weight="1"
+        android:text="Browse gallery"
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/fragment_user_info_take_picture_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Take a picture" />
+        android:layout_weight="1"
+        android:text="Take a picture"
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/fragment_user_info_logout_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Log out"></Button>
+        android:layout_weight="1"
+        android:text="Log out"
+        android:textSize="20sp"></Button>
 </LinearLayout>
