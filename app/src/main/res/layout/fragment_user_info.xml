@@ -15,19 +15,19 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <Button
-        android:id="@+id/upload_image_button"
+        android:id="@+id/fragment_user_info_browse_gallery_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Browse gallery" />
 
     <Button
-        android:id="@+id/take_picture_button"
+        android:id="@+id/fragment_user_info_take_picture_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Take a picture" />
 
     <Button
-        android:id="@+id/logout_button"
+        android:id="@+id/fragment_user_info_logout_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Log out"></Button>

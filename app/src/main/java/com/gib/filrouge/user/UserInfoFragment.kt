@@ -32,98 +32,103 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.*
 
+// Fragment displaying the user's info
+// (avatar + buttons to change the avatar,
+// and log out).
 class UserInfoFragment : Fragment() {
 
     private val appContext = Api.appContext
 
-    private val userWebService = Api.userWebService
-
-    private var avatar: ImageView? = null
-    private var takePictureButton: Button? = null
-    private var uploadImageButton: Button? = null
-    private var logoutButton: Button? = null
-
-    val mediaStore by lazy { MediaStoreRepository(appContext) }
+    // Used to manage image files and storage.
+    private val mediaStore by lazy { MediaStoreRepository(appContext) }
+    // The avatar is designated by a URI.
     private lateinit var photoUri: Uri
 
-    private var viewModel = UserViewModel()
+    private val viewModel = UserViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Ne rien mettre avant d'avoir inflate notre layout (fragment_task_list.xml).
-        val rootView = inflater.inflate(R.layout.fragment_user_info, container, false);
-
-        return rootView;
+        return inflater.inflate(R.layout.fragment_user_info, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        avatar = view?.findViewById(R.id.image_view);
-        takePictureButton = view?.findViewById(R.id.take_picture_button);
-        uploadImageButton = view?.findViewById(R.id.upload_image_button);
-        logoutButton = view?.findViewById(R.id.logout_button)
+        // Grabbing the views comprising the layout.
+        val avatar = view?.findViewById<ImageView>(R.id.image_view)
+        val takePictureButton = view?.findViewById<Button>(R.id.fragment_user_info_take_picture_button)
+        val browseGalleryButton = view?.findViewById<Button>(R.id.fragment_user_info_browse_gallery_button)
+        val logoutButton = view?.findViewById<Button>(R.id.fragment_user_info_logout_button)
 
+        // We define the callback functions for click
+        // events on the buttons.
         takePictureButton?.setOnClickListener {
-            launchCameraWithPermission();
+            launchCameraWithPermission()
         }
-        uploadImageButton?.setOnClickListener {
-            galleryLauncher.launch("image/*");
+        browseGalleryButton?.setOnClickListener {
+            galleryLauncher.launch("image/*")
         }
         logoutButton?.setOnClickListener {
             // Erasing the API token from shared preferences.
             PreferenceManager.getDefaultSharedPreferences(appContext).edit {
                 putString("auth_token_key", "")
             }
-            // Redirecting to the authentication activity.
-            //activityLauncher.launch(Intent(this, AuthenticationActivity::class.java))
+            // Redirecting to the authentication fragment.
             findNavController().navigate(R.id.action_userInfoFragment_to_authenticationFragment)
         }
 
+        // Creates a file to hold the avatar image.
+        // This file is stored in the device's memory.
+        // The file is referred to by a URI stored in the photoUri attribute.
         lifecycleScope.launchWhenStarted {
             photoUri = mediaStore.createMediaUri(
                 filename = "picture-${UUID.randomUUID()}.jpg",
                 type = FileType.IMAGE,
                 location = SharedPrimary
-            ).getOrThrow();
+            ).getOrThrow()
         }
 
+        // Sets the callback function to use when the avatar
+        // changes.
         lifecycleScope.launch {
             viewModel.userInfo.collect { userInfo ->
                 avatar?.load(userInfo?.avatar ?: "https://goo.gl/gEgYUd") {
-                    // In case of error.
-                    error(R.drawable.ic_launcher_background);
-                    // Some transformation.
-                    transformations(CircleCropTransformation());
+                    error(R.drawable.ic_launcher_background)
+                    transformations(CircleCropTransformation())
                 }
             }
         }
     }
 
     override fun onResume() {
-        viewModel.refresh();
-        super.onResume();
+        viewModel.refresh()
+        super.onResume()
     }
 
+    // Used to launch an activity in which the user
+    // can set whether the app has the permission to use the
+    // camera or not.
     private val cameraPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { accepted ->
-            if (accepted) launchCamera();
-            else showExplanation();
+            if (accepted) launchCamera()
+            else showExplanation()
         }
 
+    // Used to launch a camera activity to take a picture.
     private val cameraLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicture()) { accepted ->
-            if (accepted) handleImage(photoUri);
-            else Snackbar.make(view!!, "Échec!", Snackbar.LENGTH_LONG).show();
+            if (accepted) handleImage(photoUri)
+            else Snackbar.make(view!!, "Failure", Snackbar.LENGTH_LONG).show()
         }
 
-
+    // Used to launch a photo gallery activity for the user
+    // to select a picture in their gallery.
     private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
         if(it != null) {
-            handleImage(it);
+            handleImage(it)
         }
     }
 
@@ -133,28 +138,27 @@ class UserInfoFragment : Fragment() {
         val isAlreadyAccepted = permissionStatus == PackageManager.PERMISSION_GRANTED
         val isExplanationNeeded = shouldShowRequestPermissionRationale(camPermission)
         when {
-            isAlreadyAccepted -> launchCamera(); // lancer l'action souhaitée
-            isExplanationNeeded -> showExplanation(); // afficher une explication
-            else -> cameraPermissionLauncher.launch(Manifest.permission.CAMERA); // lancer la demande de permission
+            isAlreadyAccepted -> launchCamera()
+            isExplanationNeeded -> showExplanation()
+            else -> cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
     }
 
     private fun showExplanation() {
-        // ici on construit une pop-up système (Dialog) pour expliquer la nécessité de la demande de permission
+        // Making a pop-up dialog box to explain to the user why the camera access is required.
         AlertDialog.Builder(appContext)
-            .setMessage("🥺 On a besoin de la caméra, vraiment! 👉👈")
-            .setPositiveButton("Bon, ok") { _, _ -> launchAppSettings();/* ouvrir les paramètres de l'app */ }
-            .setNegativeButton("Nope") { dialog, _ -> dialog.dismiss() }
+            .setMessage("Bro, it's OK! We're not the NSA! Unless... 👉👈")
+            .setPositiveButton("I have nothing to hide!") { _, _ -> launchAppSettings() }
+            .setNegativeButton("Oh boi, oh fvck!") { dialog, _ -> dialog.dismiss() }
             .show()
     }
 
     private fun launchAppSettings() {
-        // Cet intent permet d'ouvrir les paramètres de l'app (pour modifier les permissions déjà refusées par ex)
+        // The following intent opens the app's settings.
         val intent = Intent(
             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
             Uri.fromParts("package", appContext.packageName, null)
         )
-        // ici pas besoin de vérifier avant car on vise un écran système:
         startActivity(intent)
     }
 
@@ -168,16 +172,12 @@ class UserInfoFragment : Fragment() {
     }
 
     private fun handleImage(imageUri: Uri) {
-        // Changing the state flow of UserInfoViewModel,
-        // so that collect can be called and the avatar
-        // displayed is refreshed.
-        viewModel.refresh()
-        // Sending the new avatar to the API.
+        // Sending the new avatar URI to the API.
         viewModel.updateAvatar(convert(imageUri))
     }
 
     private fun launchCamera() {
-        cameraLauncher.launch(photoUri);
+        cameraLauncher.launch(photoUri)
     }
 
 }
