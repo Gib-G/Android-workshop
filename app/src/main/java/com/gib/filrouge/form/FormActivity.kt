@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import com.gib.filrouge.R
 import com.gib.filrouge.tasklist.Task
 import java.util.*
@@ -20,7 +21,7 @@ class FormActivity : AppCompatActivity() {
     private var task: Task? = null
 
     // The different views in the activity's layout.
-    private lateinit var text: EditText
+    private lateinit var text: TextView
     private lateinit var taskNameField: EditText
     private lateinit var taskDescriptionField: EditText
     private lateinit var okButton: Button
