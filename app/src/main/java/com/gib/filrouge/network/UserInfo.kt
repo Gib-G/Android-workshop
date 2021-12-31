@@ -15,5 +15,3 @@ data class UserInfo
     @SerialName("avatar")
     val avatar: String?
     )
-{
-}
