@@ -62,7 +62,7 @@ class TaskListFragment : Fragment() {
 
         // We retrieve the navigation controller.
         navController = findNavController()
-        
+
         // Retrieves the API token from shared preferences.
         val token = PreferenceManager.getDefaultSharedPreferences(Api.appContext).getString("auth_token_key", "")
         // If the token does not exist, we redirect to the authentication
