@@ -9,11 +9,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.edit
 import androidx.navigation.fragment.findNavController
 import com.gib.filrouge.R
 
+// Fragment displayed when the user needs to
+// log in.
 class LoginFragment : Fragment() {
 
     private val userViewModel = UserViewModel()
