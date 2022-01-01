@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".user.AuthenticationFragment">
@@ -11,34 +12,48 @@
         android:id="@+id/fragment_authentication_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:layout_weight="1"
+        android:gravity="center"
         android:text="Yet another task list app!"
         android:textAlignment="center"
-        android:textSize="48sp" />
+        android:textColor="@color/text_white"
+        android:textSize="34sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/fragment_authentication_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:layout_weight="5"
         android:text="Store your task list in the app! This app is the client for an API storing users' task lists and profile information."
         android:textAlignment="center"
+        android:textColor="@color/text_white"
         android:textSize="20sp" />
 
     <Button
         android:id="@+id/fragment_authentication_login_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_weight="1"
+        android:backgroundTint="@color/color1"
         android:text="Log in"
+        android:textColor="@color/text_white"
         android:textSize="20sp" />
 
     <Button
         android:id="@+id/fragment_authentication_signup_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_weight="1"
+        android:backgroundTint="@color/blue1"
         android:text="Sign up"
+        android:textColor="@color/text_white"
         android:textSize="20sp" />
 
 </LinearLayout>

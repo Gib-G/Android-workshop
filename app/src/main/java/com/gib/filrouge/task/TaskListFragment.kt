@@ -144,8 +144,7 @@ class TaskListFragment : Fragment() {
                     transformations(CircleCropTransformation());
                 }
                 // Refreshing the info displayed within the header.
-                header?.text = """${userInfo?.firstName}
-                |${userInfo?.lastName}""".trimMargin();
+                header?.text = "${userInfo?.firstName} ${userInfo?.lastName}"
             }
         }
     }
