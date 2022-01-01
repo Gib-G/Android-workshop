@@ -1,18 +1,15 @@
-package com.gib.filrouge.network
+package com.gib.filrouge.task
 
-import com.gib.filrouge.tasklist.Task
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.gib.filrouge.Api
 
-class TasksRepository {
+// Makes HTTP requests to the API using the methods
+// provided by the task web service.
+class TaskRepository {
 
-    private val tasksWebService = Api.tasksWebService
+    private val taskWebService = Api.taskWebService
 
     suspend fun refresh(): List<Task>? {
-        // Call HTTP (opération longue):
-        val response = tasksWebService.getTasks()
-        // À la ligne suivante, on a reçu la réponse de l'API:
+        val response = taskWebService.getTasks()
         if (response.isSuccessful) {
             return response.body();
         }
@@ -20,7 +17,7 @@ class TasksRepository {
     }
 
     suspend fun deleteTask(task: Task): Boolean {
-        val response = tasksWebService.deleteTask(task.id);
+        val response = taskWebService.deleteTask(task.id);
         if(response.isSuccessful) {
             return true;
         }
@@ -28,7 +25,7 @@ class TasksRepository {
     }
 
     suspend fun updateTask(task: Task): Task? {
-        var response = tasksWebService.updateTask(task, task.id);
+        var response = taskWebService.updateTask(task, task.id);
         if(response.isSuccessful) {
             return response.body();
         }
@@ -36,7 +33,7 @@ class TasksRepository {
     }
 
     suspend fun createTask(task: Task): Task? {
-        var response = tasksWebService.createTask(task);
+        var response = taskWebService.createTask(task);
         if(response.isSuccessful) {
             return response.body();
         }

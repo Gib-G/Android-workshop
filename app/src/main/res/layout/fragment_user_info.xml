@@ -4,31 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
+    android:fadingEdge="horizontal|vertical"
     android:gravity="center"
     android:orientation="vertical">
 
     <ImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_weight="3"
+        android:padding="10dp"
         tools:ignore="ImageContrastCheck"
         tools:srcCompat="@tools:sample/avatars" />
 
     <Button
-        android:id="@+id/upload_image_button"
+        android:id="@+id/fragment_user_info_browse_gallery_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Browse gallery" />
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/color1"
+        android:text="Browse gallery"
+        android:textColor="@color/text_white"
+        android:textSize="20sp" />
 
     <Button
-        android:id="@+id/take_picture_button"
+        android:id="@+id/fragment_user_info_take_picture_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Take a picture" />
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/color1"
+        android:text="Take a picture"
+        android:textColor="@color/text_white"
+        android:textSize="20sp" />
 
     <Button
-        android:id="@+id/logout_button"
+        android:id="@+id/fragment_user_info_logout_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Log out"></Button>
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/warning"
+        android:text="Log out"
+        android:textColor="@color/text_white"
+        android:textSize="20sp"></Button>
 </LinearLayout>

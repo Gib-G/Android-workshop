@@ -37,7 +37,7 @@
     </fragment>
     <fragment
         android:id="@+id/taskListFragment"
-        android:name="com.gib.filrouge.tasklist.TaskListFragment"
+        android:name="com.gib.filrouge.task.TaskListFragment"
         android:label="TaskListFragment" >
         <action
             android:id="@+id/action_taskListFragment_to_authenticationFragment"

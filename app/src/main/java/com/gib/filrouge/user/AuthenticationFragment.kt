@@ -9,14 +9,10 @@ import android.widget.Button
 import androidx.navigation.fragment.findNavController
 import com.gib.filrouge.R
 
+// This fragment gets displayed when the user is
+// prompted to authenticate.
+// User is asked to log in or sign up.
 class AuthenticationFragment : Fragment() {
-
-    private var loginButton: Button? = null
-    private var signupButton: Button? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,13 +25,15 @@ class AuthenticationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loginButton = view.findViewById(R.id.fragment_authentication_login_button)
-        signupButton = view.findViewById(R.id.fragment_authentication_signup_button)
+        val navController = findNavController()
+        // Setting callback functions for click events on the buttons.
+        val loginButton = view.findViewById<Button>(R.id.fragment_authentication_login_button)
+        val signupButton = view.findViewById<Button>(R.id.fragment_authentication_signup_button)
         loginButton?.setOnClickListener {
-            findNavController().navigate(R.id.action_authenticationFragment_to_loginFragment)
+            navController.navigate(R.id.action_authenticationFragment_to_loginFragment)
         }
         signupButton?.setOnClickListener {
-            findNavController().navigate(R.id.action_authenticationFragment_to_signupFragment)
+            navController.navigate(R.id.action_authenticationFragment_to_signupFragment)
         }
     }
 

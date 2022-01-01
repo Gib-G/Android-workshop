@@ -1,10 +1,11 @@
-package com.gib.filrouge.network
+package com.gib.filrouge.task
 
-import com.gib.filrouge.tasklist.Task
 import retrofit2.Response
 import retrofit2.http.*
 
-interface TasksWebService {
+// This interface is used by Retrofit to make
+// the right task-related HTTP requests to the API.
+interface TaskWebService {
 
     @GET("tasks")
     suspend fun getTasks(): Response<List<Task>>

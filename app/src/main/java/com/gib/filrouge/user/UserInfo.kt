@@ -1,4 +1,4 @@
-package com.gib.filrouge.network
+package com.gib.filrouge.user
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -15,5 +15,3 @@ data class UserInfo
     @SerialName("avatar")
     val avatar: String?
     )
-{
-}

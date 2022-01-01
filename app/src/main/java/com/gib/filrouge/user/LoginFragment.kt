@@ -1,6 +1,5 @@
 package com.gib.filrouge.user
 
-import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.fragment.app.Fragment
@@ -10,29 +9,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.edit
 import androidx.navigation.fragment.findNavController
-import com.gib.filrouge.MainActivity
 import com.gib.filrouge.R
 
+// Fragment displayed when the user needs to
+// log in.
 class LoginFragment : Fragment() {
 
-    private var emailField: EditText? = null
-    private var passwordField: EditText? = null
-    private var loginButton: Button? = null
-
-    private val userInfoViewModel = UserInfoViewModel()
-
-    // The launcher used to launch the main activity
-    // when login is successful.
-    private val activityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val userViewModel = UserViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,12 +31,12 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Retrieving the input text fields (for email and password).
-        emailField = view.findViewById(R.id.fragment_login_email_field)
-        passwordField = view.findViewById(R.id.fragment_login_password_field)
+        val emailField = view.findViewById<EditText>(R.id.fragment_login_email_field)
+        val passwordField = view.findViewById<EditText>(R.id.fragment_login_password_field)
 
         // Defining what happens when the login button
         // is pressed.
-        loginButton = view.findViewById(R.id.fragment_login_login_button)
+        val loginButton = view.findViewById<Button>(R.id.fragment_login_login_button)
         loginButton?.setOnClickListener {
             // Retrieving what the user has filled in the form.
             val email = emailField?.text.toString()
@@ -59,9 +44,10 @@ class LoginFragment : Fragment() {
             // Checking that the user is not sending empty
             // data before proceeding.
             if(email != "" && password != "") {
-                userInfoViewModel.login(LoginForm(email, password))
+                // Communicates with the API.
+                userViewModel.login(LoginForm(email, password))
                 // Login failed.
-                if(userInfoViewModel.authenticationResponse == null) {
+                if(userViewModel.authenticationResponse == null) {
                     Toast.makeText(context, "Unknown email - password combination", Toast.LENGTH_LONG).show()
                 }
                 // Login successful.
@@ -69,17 +55,15 @@ class LoginFragment : Fragment() {
                     // We add the token sent back by the API
                     // to shared preferences.
                     PreferenceManager.getDefaultSharedPreferences(context).edit {
-                        putString("auth_token_key", userInfoViewModel.authenticationResponse?.apiToken)
+                        putString("auth_token_key", userViewModel.authenticationResponse?.apiToken)
                     }
-                    Toast.makeText(context, "Welcome", Toast.LENGTH_LONG).show()
-                    // Launching the main activity to display the
-                    // task list.
-                    //activityLauncher.launch(Intent(activity, MainActivity::class.java))
+                    // User logged in! We can redirect to the task list fragment.
                     findNavController().navigate(R.id.action_loginFragment_to_taskListFragment)
                 }
             }
+            // Incomplete form.
             else {
-                Toast.makeText(context, "Please fill in the fields", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Please fill in all the fields", Toast.LENGTH_LONG).show()
             }
         }
     }
