@@ -11,39 +11,64 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background"
         android:gravity="center"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView"
-            android:layout_width="294dp"
-            android:layout_height="139dp"
-            android:layout_marginBottom="96dp"
+            android:id="@+id/activity_form_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="2"
+            android:gravity="center_horizontal"
             android:text="Create/edit task!"
             android:textAlignment="center"
-            android:textSize="34sp" />
+            android:textColor="@color/text_white"
+            android:textSize="34sp"
+            android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/taskNameInput"
-            android:layout_width="348dp"
-            android:layout_height="54dp"
+            android:id="@+id/activity_form_task_name_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
             android:ems="10"
+            android:hint="Task name"
             android:inputType="textPersonName"
-            android:text="Task name" />
+            android:textColor="@color/text_white"
+            android:textColorHint="@color/hint2"
+            android:textSize="20sp" />
 
         <EditText
-            android:id="@+id/taskDescriptionInput"
-            android:layout_width="348dp"
-            android:layout_height="54dp"
+            android:id="@+id/activity_form_task_description_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
             android:ems="10"
+            android:hint="Task description"
             android:inputType="textPersonName"
-            android:text="Task description" />
+            android:textColor="@color/text_white"
+            android:textColorHint="@color/hint2"
+            android:textSize="20sp" />
 
         <Button
-            android:id="@+id/validateTaskCreation"
-            android:layout_width="252dp"
-            android:layout_height="59dp"
-            android:text="OK" />
+            android:id="@+id/activity_form_ok_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/color1"
+            android:text="OK"
+            android:textColor="@color/text_white"
+            android:textSize="20sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

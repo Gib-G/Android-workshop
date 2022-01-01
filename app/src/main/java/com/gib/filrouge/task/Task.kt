@@ -1,4 +1,4 @@
-package com.gib.filrouge.tasklist
+package com.gib.filrouge.task
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -9,8 +9,7 @@ data class Task
     @SerialName("id")
     val id: String,
     @SerialName("title")
-    val title: String,
+    val name: String,
     @SerialName("description")
-    val description: String = "This is a task!"
-) : java.io.Serializable
-{}
+    val description: String
+    ) : java.io.Serializable

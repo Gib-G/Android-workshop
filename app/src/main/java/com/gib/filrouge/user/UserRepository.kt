@@ -1,11 +1,11 @@
 package com.gib.filrouge.user
 
-import android.net.Uri
-import com.gib.filrouge.network.Api
-import com.gib.filrouge.network.UserInfo
+import com.gib.filrouge.Api
 import okhttp3.MultipartBody
 
-class UserInfoRepository {
+// Makes user-related HTTP requests to the API
+// using UserWebService.
+class UserRepository {
 
     private val userWebService = Api.userWebService;
 
@@ -27,6 +27,22 @@ class UserInfoRepository {
 
     suspend fun update(user: UserInfo): UserInfo? {
         var response = userWebService.update(user);
+        if(response.isSuccessful) {
+            return response.body();
+        }
+        return null;
+    }
+
+    suspend fun login(loginDetails: LoginForm): AuthenticationResponse? {
+        var response = userWebService.login(loginDetails);
+        if(response.isSuccessful) {
+            return response.body();
+        }
+        return null;
+    }
+
+    suspend fun signUp(signupDetails: SignUpForm): AuthenticationResponse? {
+        var response = userWebService.signUp(signupDetails);
         if(response.isSuccessful) {
             return response.body();
         }
