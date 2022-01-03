@@ -80,17 +80,6 @@ class UserInfoFragment : Fragment() {
             findNavController().navigate(R.id.action_userInfoFragment_to_authenticationFragment)
         }
 
-        // Creates a file to hold the avatar image.
-        // This file is stored in the device's memory.
-        // The file is referred to by a URI stored in the photoUri attribute.
-        lifecycleScope.launchWhenStarted {
-            photoUri = mediaStore.createMediaUri(
-                filename = "picture-${UUID.randomUUID()}.jpg",
-                type = FileType.IMAGE,
-                location = SharedPrimary
-            ).getOrThrow()
-        }
-
         // Sets the callback function to use when the avatar
         // changes.
         lifecycleScope.launch {
@@ -177,6 +166,16 @@ class UserInfoFragment : Fragment() {
     }
 
     private fun launchCamera() {
+        // Creates a file to hold the avatar image.
+        // This file is stored in the device's memory.
+        // The file is referred to by a URI stored in the photoUri attribute.
+        lifecycleScope.launchWhenStarted {
+            photoUri = mediaStore.createMediaUri(
+                filename = "picture-${UUID.randomUUID()}.jpg",
+                type = FileType.IMAGE,
+                location = SharedPrimary
+            ).getOrThrow()
+        }
         cameraLauncher.launch(photoUri)
     }
 
