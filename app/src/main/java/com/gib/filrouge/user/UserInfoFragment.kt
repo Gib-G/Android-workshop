@@ -146,7 +146,7 @@ class UserInfoFragment : Fragment() {
 
     private fun showExplanation() {
         // Making a pop-up dialog box to explain to the user why the camera access is required.
-        AlertDialog.Builder(appContext)
+        AlertDialog.Builder(activity)
             .setMessage("Bro, it's OK! We're not the NSA! Unless... 👉👈")
             .setPositiveButton("I have nothing to hide!") { _, _ -> launchAppSettings() }
             .setNegativeButton("Oh boi, oh fvck!") { dialog, _ -> dialog.dismiss() }
