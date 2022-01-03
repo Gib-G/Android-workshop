@@ -1,4 +1,0 @@
-Avancement dans le TP4 : 
-étape 2, TaskListAdapter hérite maintenant de ListAdapter au lieu de 
-RecyclerView.Adapter.
-L'application se lance !
